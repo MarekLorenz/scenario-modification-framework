@@ -1,36 +1,49 @@
 # requires L1 for lanelet information
 from mtl_converter.utils import is_within_lanelet
 
-def convert_l4_to_mtl(L4: dict, L1: dict) -> list[str]:
+def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_positions: list[dict]) -> tuple[list[str], set[str]]:
     """
     Convert Layer 4 (dynamic obstacles) scenario to MTL scenario
+    Returns tuple containing:
+    - List of MTL formulas
+    - Set of all mentioned lanelet IDs
     """
     movable_objects_mtl = []
+    lanelets_mentioned = set()
 
-    for dynamic_obstacle in [x for x in L4['dynamicObstacle']]:
+    for dynamic_obstacle in [x for x in L4['dynamicObstacle'] if x['id'] in critical_obstacles]:
         current_lanelet = None
         start_time = None
-        for timestamp in dynamic_obstacle['trajectory']:
+        for idx, timestamp in enumerate(dynamic_obstacle['trajectory']):
             position = timestamp['position']
             time = timestamp['time']
             found_lanelet = None
+            
+            # Find current lanelet
             for lanelet in L1['lanelet']:
                 if is_within_lanelet(position, lanelet):
                     found_lanelet = lanelet['id']
                     break
+
             if found_lanelet != current_lanelet:
                 if current_lanelet is not None:
-                    # Add the interval for the previous lanelet to the list
                     movable_objects_mtl.append(f"G_[{start_time}, {time}]: occupy({dynamic_obstacle['id']}, {current_lanelet})")
-                # Update the current lanelet, start time, and entry orientation
+                    lanelets_mentioned.add(current_lanelet)
+
+                # Calculate distance only on entry to new lanelet
+                if idx < len(ego_positions):
+                    ego_pos = ego_positions[idx]
+                    distance = _euclidean_distance(position, ego_pos)
+                    movable_objects_mtl.append(f"G[{start_time}, {start_time}] Distance ego to {dynamic_obstacle['id']}: {distance:.2f}m")
+
                 current_lanelet = found_lanelet
                 start_time = time
 
-        # Add the last interval if the obstacle was on a lanelet
         if current_lanelet is not None:
             movable_objects_mtl.append(f"G_[{start_time}, {time}]: occupy({dynamic_obstacle['id']}, {current_lanelet})")
+            lanelets_mentioned.add(current_lanelet)
 
-    return movable_objects_mtl
+    return movable_objects_mtl, lanelets_mentioned
 
 def convert_l4_to_mtl_simplified(L4: dict, L1: dict) -> list[str]:
     """
@@ -48,9 +61,8 @@ def convert_l4_to_mtl_simplified(L4: dict, L1: dict) -> list[str]:
             position = state['position']
             
             # Find current lanelet
-            found_lanelet = next((l['id'] for l in L1['lanelet'] 
-                                if is_within_lanelet(position, l)), None)
-            
+            found_lanelet = next((l['id'] for l in L1['lanelet'] if is_within_lanelet(position, l)), None)
+
             # Track lanelet changes
             if found_lanelet != current_lanelet:
                 if current_lanelet is not None:  # Record previous interval
@@ -69,3 +81,7 @@ def convert_l4_to_mtl_simplified(L4: dict, L1: dict) -> list[str]:
             )
     
     return "\n".join(obstacle_summaries)
+
+def _euclidean_distance(pos1: dict, pos2: dict) -> float:
+    """Calculate Euclidean distance between two positions"""
+    return ((float(pos1['x']) - float(pos2['x']))**2 + (float(pos1['y']) - float(pos2['y']))**2)**0.5
