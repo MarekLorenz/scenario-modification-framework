@@ -1,11 +1,10 @@
 import argparse
-from llm_templates.critical_interval import find_critical_interval
-from llm_templates.critical_obstacles import find_critical_obstacles
+from llm_templates.critical_interval import find_critical_interval, parse_critical_interval_output
+from llm_templates.critical_obstacles import find_critical_obstacles, parse_critical_obstacles_output
 from mtl_converter.L1_converter import convert_l1_to_mtl
-from mtl_converter.L4_converter import convert_l4_to_mtl_simplified, convert_l4_to_mtl
-from mtl_converter.L7_converter import convert_l7_to_mtl_simplified, convert_l7_to_mtl, extract_ego_positions
+from mtl_converter.L4_converter import convert_l4_to_mtl_simplified, convert_l4_to_mtl, get_lanelets_for_obstacle
+from mtl_converter.L7_converter import convert_l7_to_mtl_simplified, convert_l7_to_mtl, extract_ego_positions, get_ego_lanelets_in_interval
 from preprocessing.extract_trajectories import extract_ego_trajectory
-from preprocessing.plot import lanelets_to_polygons
 from preprocessing.layermodel import extract_important_information, assign_layers
 from preprocessing.xml2json import convert_single_xml_to_json
 from scenario_modification.modify_scenario import modify_scenario
@@ -22,67 +21,85 @@ def main():
     scenario_name = args.scenario
     file = f'data/scenarios/{scenario_name}.xml'
     ego_trajectory_file = f"data/ego_trajectories/ego_trajectory_{scenario_name}.csv"
-    convert_single_xml_to_json(file, 'data/json_scenarios')
-    information_dict = extract_important_information(f'data/json_scenarios/{scenario_name}.json')
+    modified_scenario = helper(file, scenario_name, ego_trajectory_file)
+    print(f"Modified scenario: {modified_scenario}")
 
-    layers = assign_layers(information_dict)
+    # Visualize the dynamic obstacles before and after modification
+    visualize_dynamic_obstacles(file, scenario_name)
+    visualize_dynamic_obstacles(modified_scenario, "updated_scenario")
 
-    # Extract individual layers
-    L1 = layers["L1_RoadLevel"]
-    L2 = layers["L2_TrafficInfrastructure"]
-    L3 = layers["L3_TemporalModifications"]
-    L4 = layers["L4_MovableObjects"]
-    L5 = layers["L5_EnvironmentalConditions"]
-    L6 = layers["L6_DigitalInformation"]
-
-    # Convert lanelets to polygons
-    polygons = lanelets_to_polygons(L1)
-
-    # ego layer
-    L7 = extract_ego_trajectory(ego_trajectory_file)
-
-    # convert layers to mtl
-    L4_mtl = convert_l4_to_mtl_simplified(L4, L1)
-    L7_mtl = convert_l7_to_mtl_simplified(L7, L1)
-
-    # LLM Step 1
-    critical_obstacles = find_critical_obstacles(L4_mtl, L7_mtl)
-    critical_obstacles_list = [
-        obstacle.strip().replace('"', '').replace("'", '')
-        for obstacle in critical_obstacles.replace("[", "").replace("]", "").split(",")
-    ]
-    print(f"Critical obstacles: {critical_obstacles_list}")
-
-    # LLM Step 2
-    ego_positions = extract_ego_positions(L7)
-    L4_mtl, L4_lanelets_mentioned = convert_l4_to_mtl(L4, L1, critical_obstacles_list, ego_positions)
-    L7_mtl, L7_lanelets_mentioned = convert_l7_to_mtl(L7, L1)
-    L1_mtl = convert_l1_to_mtl(L1, list(L4_lanelets_mentioned) + list(L7_lanelets_mentioned))
-
-    critical_interval = find_critical_interval(L7_mtl, L4_mtl, L1_mtl)
-    critical_interval_list = critical_interval.replace("(", "").replace(")", "").replace("[", "").replace("]", "").split(",")
-    critical_interval_list = [x.strip() for x in critical_interval_list]
-    print(f"Critical interval: {critical_interval_list}")
-
-    # LLM Step 3: Modify the scenario
-    altered_obstacle_data = modify_scenario(critical_interval_list[0], (critical_interval_list[1], critical_interval_list[2]), critical_interval_list[3], L4, L7)
-    parsed_obstacle_data = parse_obstacle_data(altered_obstacle_data)
-    print(f"Parsed obstacle data: {parsed_obstacle_data}")
-    update_xml_scenario(f'data/scenarios/{scenario_name}.xml', critical_interval_list[0], parsed_obstacle_data, "updated_scenario.xml")
+def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: str, n=1):
+    # Termination condition: maximum recursion depth = 3
+    if n > 3:
+        return scenario_filepath
     
-    # Visualize original scenario
-    visualize_dynamic_obstacles_with_time(L4, show_plot=True)
+    print(f"Running modification for the {n}th time")
+    try:
+        convert_single_xml_to_json(scenario_filepath, 'data/json_scenarios')
+        information_dict = extract_important_information(f'data/json_scenarios/{scenario_name}.json')
 
-    # Visualize updated scenario
-    scenario_name = "updated_scenario"
-    file = f'updated_scenario.xml'
-    convert_single_xml_to_json(file, 'data/json_scenarios')
+        layers = assign_layers(information_dict)
+
+        # Extract individual layers
+        L1 = layers["L1_RoadLevel"]
+        L4 = layers["L4_MovableObjects"]
+        # ego layer
+        L7 = extract_ego_trajectory(ego_trajectory_filepath)
+
+        # convert layers to mtl
+        L4_mtl = convert_l4_to_mtl_simplified(L4, L1)
+        L7_mtl = convert_l7_to_mtl_simplified(L7, L1)
+
+        # LLM Step 1
+        critical_obstacles = find_critical_obstacles(L4_mtl, L7_mtl)
+        step_one_result = parse_critical_obstacles_output(critical_obstacles)
+        print(f"Critical obstacles: {step_one_result.critical_obstacle_ids}")
+
+        # LLM Step 2
+        ego_positions = extract_ego_positions(L7)
+        L4_mtl, L4_lanelets_mentioned = convert_l4_to_mtl(L4, L1, step_one_result.critical_obstacle_ids, ego_positions)
+        L7_mtl, L7_lanelets_mentioned = convert_l7_to_mtl(L7, L1)
+        L1_mtl = convert_l1_to_mtl(L1, list(L4_lanelets_mentioned) + list(L7_lanelets_mentioned))
+
+        critical_interval = find_critical_interval(L7_mtl, L4_mtl, L1_mtl)
+        # Additional llm-based termination condition
+        if "interrupt" in critical_interval.lower():
+            print("Interrupt signal received. Returning current scenario.")
+            return scenario_filepath
+        step_two_result = parse_critical_interval_output(critical_interval)
+        print(f"Step two result: {step_two_result}")
+
+        # LLM Step 3: Modify the scenario
+        start_time = step_two_result.critical_interval.start_time
+        end_time = step_two_result.critical_interval.end_time
+        dynamic_obstacle_lanelets = get_lanelets_for_obstacle(L4, L1, step_two_result.critical_obstacle_id, start_time, end_time)
+        ego_lanelets = get_ego_lanelets_in_interval(L7, L1, start_time, end_time)
+        altered_obstacle_data = modify_scenario(step_two_result, L1,  L4, L7, ego_lanelets, dynamic_obstacle_lanelets)
+        parsed_obstacle_data = parse_obstacle_data(altered_obstacle_data)
+        print(f"Parsed obstacle data: {parsed_obstacle_data}")
+        update_xml_scenario(scenario_filepath, step_two_result.critical_obstacle_id, parsed_obstacle_data, "updated_scenario.xml")
+
+        scenario_name = "updated_scenario"
+        output_file = f'updated_scenario.xml'
+
+    except Exception as e:
+        print(f"Error occurred - Retrying: {e}")
+        output_file = scenario_filepath
+
+    finally:
+        updated_n = n + 1
+        return helper(
+            scenario_filepath=output_file,
+            scenario_name=scenario_name, 
+            ego_trajectory_filepath=ego_trajectory_filepath,
+            n=updated_n)
+
+def visualize_dynamic_obstacles(scenario_filepath: str, scenario_name: str):
+    convert_single_xml_to_json(scenario_filepath, 'data/json_scenarios')
     information_dict = extract_important_information(f'data/json_scenarios/{scenario_name}.json')
     layers = assign_layers(information_dict)
     L4 = layers["L4_MovableObjects"]
-
     visualize_dynamic_obstacles_with_time(L4, show_plot=True)
-
 
 if __name__ == "__main__":
     main()

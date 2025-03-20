@@ -1,6 +1,8 @@
-from llm_templates.llm_utils import send_local_llama_request, send_local_deepseek_request
+import json
+from llm_templates.llm_utils import send_gemini_request, get_consistency_params
+from generation_types.generation import StepOneGenerationResult
 
-def find_critical_obstacles(L4_mtl, L7_mtl):
+def find_critical_obstacles(L4_mtl, L7_mtl) -> str:
     """
     Find critical obstacles in the scenario
     """
@@ -36,15 +38,21 @@ Obstacles:
 
 Ego car: 
 {L7_mtl}
-    """
+This is important: Start your response with ```json
+{{
+    "critical_obstacle_ids": [
+}}
+"""
 
-    response = send_local_llama_request(system_prompt, user_prompt, **_get_consistency_params())
+    response = send_gemini_request(system_prompt, user_prompt, **get_consistency_params())
 
     return response
 
-def _get_consistency_params() -> dict:
-    return {
-        "temperature": 1.0,
-        "top_p": 0.001,
-        "seed": 77
-    }
+def parse_critical_obstacles_output(output: str) -> StepOneGenerationResult:
+    """
+    Parse the output of the critical obstacles generation
+    """
+    output = output.replace("```json", "").replace("```", "")
+    output = output.strip()
+    output_dict = json.loads(output)
+    return StepOneGenerationResult(critical_obstacle_ids=output_dict["critical_obstacle_ids"])

@@ -14,6 +14,13 @@ def parse_obstacle_data(json_str: str) -> list[dict]:
     Returns:
         List of trajectory point dictionaries
     """
+    json_str = json_str.replace("```", "")
+    start_index = json_str.find('[')
+    if start_index == -1:
+        json_str = "[\n" + json_str + "\n]"
+        start_index = 0
+    json_str = json_str[start_index:]
+    print(f"JSON str: {json_str}")
     try:
         # Attempt to parse the JSON
         data = json.loads(json_str)

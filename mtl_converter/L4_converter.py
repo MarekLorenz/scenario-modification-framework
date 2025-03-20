@@ -33,6 +33,7 @@ def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_pos
                 # Calculate distance only on entry to new lanelet
                 if idx < len(ego_positions):
                     ego_pos = ego_positions[idx]
+                    # TODO: use Time to Collision instead of Euclidean distance / Time to Break
                     distance = _euclidean_distance(position, ego_pos)
                     movable_objects_mtl.append(f"G[{start_time}, {start_time}] Distance ego to {dynamic_obstacle['id']}: {distance:.2f}m")
 
@@ -81,6 +82,59 @@ def convert_l4_to_mtl_simplified(L4: dict, L1: dict) -> list[str]:
             )
     
     return "\n".join(obstacle_summaries)
+
+def get_lanelets_for_obstacle(
+    L4: dict,
+    L1: dict,
+    obstacle_id: str,
+    start_time: float,
+    end_time: float
+) -> list[int]:
+    """
+    Get all lanelets occupied by a specific obstacle during time interval.
+    
+    Args:
+        L4: Layer 4 data with dynamic obstacles
+        L1: Layer 1 lanelet data
+        obstacle_id: Target obstacle ID to analyze
+        start_time: Interval start (inclusive)
+        end_time: Interval end (inclusive)
+    
+    Returns:
+        Sorted list of unique lanelet IDs occupied during interval
+    """
+    occupied = set()
+    
+    # Find target obstacle
+    obstacle = next(
+        (obs for obs in L4.get('dynamicObstacle', []) 
+         if obs['id'] == obstacle_id),
+        None
+    )
+    
+    if not obstacle:
+        return []
+    
+    # Check trajectory points in time window
+    for state in obstacle['trajectory']:
+        if start_time <= int(state['time']) <= end_time:
+            lanelet_id = next(
+                (l['id'] for l in L1['lanelet'] 
+                 if is_within_lanelet(state['position'], l)),
+                None
+            )
+            if lanelet_id:
+                occupied.add(lanelet_id)
+    
+    return occupied
+# ============= Safety Metrics ====================
+
+def _time_to_collision(ego_positon: dict, ego_velocity: float, ego_acceleration: float, dynamic_obstacle_pos: dict, dynamic_obstacle_velocity: float, dynamic_obstacle_acceleration: float):
+    # reletive velocity
+    pass
+
+def _time_to_brake(ego_positon: dict, ego_velocity: float, ego_acceleration: float):
+    pass
 
 def _euclidean_distance(pos1: dict, pos2: dict) -> float:
     """Calculate Euclidean distance between two positions"""

@@ -78,3 +78,41 @@ def extract_ego_positions(L7: dict) -> list[dict]:
         {'x': timestamp['x'], 'y': timestamp['y']}
         for timestamp in L7
     ]
+
+def get_ego_lanelets_in_interval(
+    L7: list[dict],
+    L1: dict,
+    start_time: float,
+    end_time: float
+) -> list[int]:
+    """
+    Get all lanelets occupied by ego vehicle during time interval.
+    
+    Args:
+        L7: List of ego states (from Layer 7)
+        L1: Layer 1 lanelet data
+        start_time: Interval start (inclusive)
+        end_time: Interval end (inclusive)
+    
+    Returns:
+        Sorted list of unique lanelet IDs occupied during interval
+    """
+    occupied = set()
+    
+    for state in L7:
+        # Use 'timestep' as time value (convert to float if needed)
+        time = float(state['timestep'])
+        
+        if float(start_time) <= time <= float(end_time):
+            # Use direct position coordinates
+            position = {'x': state['x'], 'y': state['y']}
+            
+            lanelet_id = next(
+                (l['id'] for l in L1['lanelet'] 
+                 if is_within_lanelet(position, l)),
+                None
+            )
+            if lanelet_id:
+                occupied.add(lanelet_id)
+    
+    return sorted(occupied)

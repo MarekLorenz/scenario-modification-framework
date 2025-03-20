@@ -5,3 +5,4 @@ shapely
 xmltodict
 requests
 python-dotenv
+google-generativeai
