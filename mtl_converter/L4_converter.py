@@ -1,7 +1,11 @@
 # requires L1 for lanelet information
+import math
+from mtl_converter.L4_safety_metrics import time_to_collision
 from mtl_converter.utils import is_within_lanelet
 
 def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_positions: list[dict]) -> tuple[list[str], set[str]]:
+    csv_file_path = 'data/scenarios/relative_metrics.csv'
+
     """
     Convert Layer 4 (dynamic obstacles) scenario to MTL scenario
     Returns tuple containing:
@@ -13,7 +17,7 @@ def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_pos
 
     for dynamic_obstacle in [x for x in L4['dynamicObstacle'] if x['id'] in critical_obstacles]:
         current_lanelet = None
-        start_time = None
+        start_time = 0
         for idx, timestamp in enumerate(dynamic_obstacle['trajectory']):
             position = timestamp['position']
             time = timestamp['time']
@@ -33,10 +37,13 @@ def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_pos
                 # Calculate distance only on entry to new lanelet
                 if idx < len(ego_positions):
                     ego_pos = ego_positions[idx]
-                    # TODO: use Time to Collision instead of Euclidean distance / Time to Break
                     distance = _euclidean_distance(position, ego_pos)
-                    movable_objects_mtl.append(f"G[{start_time}, {start_time}] Distance ego to {dynamic_obstacle['id']}: {distance:.2f}m")
-
+                    # movable_objects_mtl.append(f"G[{start_time}, {start_time}] Distance ego to {dynamic_obstacle['id']}: {distance:.2f}m")
+                    min_ttc =  time_to_collision(timestamp=float(start_time),
+                                                  obstacle_id=float(dynamic_obstacle['id']), 
+                                                  csv_file_path=csv_file_path)
+                    movable_objects_mtl.append(f"G[{start_time}, {start_time}] TTC({dynamic_obstacle['id']}, EGO): {"No collision" if min_ttc == math.inf else f"{min_ttc}s"}")
+                    
                 current_lanelet = found_lanelet
                 start_time = time
 
@@ -127,14 +134,6 @@ def get_lanelets_for_obstacle(
                 occupied.add(lanelet_id)
     
     return occupied
-# ============= Safety Metrics ====================
-
-def _time_to_collision(ego_positon: dict, ego_velocity: float, ego_acceleration: float, dynamic_obstacle_pos: dict, dynamic_obstacle_velocity: float, dynamic_obstacle_acceleration: float):
-    # reletive velocity
-    pass
-
-def _time_to_brake(ego_positon: dict, ego_velocity: float, ego_acceleration: float):
-    pass
 
 def _euclidean_distance(pos1: dict, pos2: dict) -> float:
     """Calculate Euclidean distance between two positions"""

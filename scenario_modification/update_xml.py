@@ -3,6 +3,8 @@ import xml.etree.ElementTree as ET
 from typing import List, Dict
 from pathlib import Path
 
+from mtl_converter.utils import is_within_lanelet
+
 
 def parse_obstacle_data(json_str: str) -> list[dict]:
     """
@@ -37,7 +39,8 @@ def parse_obstacle_data(json_str: str) -> list[dict]:
 def update_xml_scenario(original_path: str,
                        obstacle_id: str,
                        updated_data: List[Dict],
-                       output_path: str = None) -> None:
+                       output_path: str = None,
+                       L1: dict = None) -> None:
     """
     Updates XML scenario with proper type handling for numeric values
     """
@@ -61,12 +64,31 @@ def update_xml_scenario(original_path: str,
                 
                 # Convert all values to strings
                 time_str = str(point_data.get('time', ''))
+                # TODO: here we can check the feasibility via is wihtin lanelet
                 x_str = f"{point_data['position']['x']:.4f}" if isinstance(point_data['position']['x'], float) else str(point_data['position']['x'])
+                x_float = float(x_str)
                 y_str = f"{point_data['position']['y']:.4f}" if isinstance(point_data['position']['y'], float) else str(point_data['position']['y'])
+                y_float = float(y_str)
                 orient_str = f"{point_data['orientation']:.4f}" if isinstance(point_data['orientation'], float) else str(point_data['orientation'])
                 velocity_str = f"{point_data['velocity']:.4f}" if isinstance(point_data['velocity'], float) else str(point_data['velocity'])
                 accel_str = f"{point_data['acceleration']:.4f}" if isinstance(point_data['acceleration'], float) else str(point_data['acceleration'])
 
+                point_is_within_lanelet = False
+                lanelets_visited = {}
+                # TODO: what are other possibilities for unfeasible trajectories
+                for lanelet in L1['lanelet']:
+
+                    postion = {"x": x_float,
+                               "y": y_float}
+                    if is_within_lanelet(postion, lanelet):
+                        point_is_within_lanelet = True
+                        # if lanelet['id'] in lanelets_visited:
+                        #     raise RuntimeError("Modified position not inside lanelet")
+                        # lanelets_visited.update(lanelet[id])
+                        break
+
+                if not point_is_within_lanelet:
+                    raise RuntimeError("Modified position not inside lanelet")
                 # Time
                 time_elem = ET.SubElement(state, 'time')
                 ET.SubElement(time_elem, 'exact').text = time_str

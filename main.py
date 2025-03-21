@@ -54,7 +54,7 @@ def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: 
         critical_obstacles = find_critical_obstacles(L4_mtl, L7_mtl)
         step_one_result = parse_critical_obstacles_output(critical_obstacles)
         print(f"Critical obstacles: {step_one_result.critical_obstacle_ids}")
-
+        
         # LLM Step 2
         ego_positions = extract_ego_positions(L7)
         L4_mtl, L4_lanelets_mentioned = convert_l4_to_mtl(L4, L1, step_one_result.critical_obstacle_ids, ego_positions)
@@ -67,7 +67,7 @@ def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: 
             print("Interrupt signal received. Returning current scenario.")
             return scenario_filepath
         step_two_result = parse_critical_interval_output(critical_interval)
-        print(f"Step two result: {step_two_result}")
+        print(f"Step 2 result: {step_two_result}")
 
         # LLM Step 3: Modify the scenario
         start_time = step_two_result.critical_interval.start_time
@@ -77,7 +77,7 @@ def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: 
         altered_obstacle_data = modify_scenario(step_two_result, L1,  L4, L7, ego_lanelets, dynamic_obstacle_lanelets)
         parsed_obstacle_data = parse_obstacle_data(altered_obstacle_data)
         print(f"Parsed obstacle data: {parsed_obstacle_data}")
-        update_xml_scenario(scenario_filepath, step_two_result.critical_obstacle_id, parsed_obstacle_data, "updated_scenario.xml")
+        update_xml_scenario(scenario_filepath, step_two_result.critical_obstacle_id, parsed_obstacle_data, "updated_scenario.xml", L1)
 
         scenario_name = "updated_scenario"
         output_file = f'updated_scenario.xml'
