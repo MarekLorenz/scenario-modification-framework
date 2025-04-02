@@ -3,14 +3,14 @@ from llm_templates.llm_utils import send_gemini_request, get_consistency_params
 from mtl_converter.L1_converter import get_adjacent_lanelets
 from generation_types.generation import StepTwoGenerationResult, TimeInterval
 
-def modify_scenario(step_two_result: StepTwoGenerationResult, L1: dict, L4: dict, L7: dict, ego_lanelets: list[int], dynamic_obstacle_lanelets: list[int]):
+def modify_scenario(step_two_result: StepTwoGenerationResult, L1: dict, L4: dict, L7: dict, ego_lanelets: list[int], dynamic_obstacle_lanelets: list[int], previous_failed_reason: str = None):
     obstacle_id = step_two_result.critical_obstacle_id
     critical_interval = step_two_result.critical_interval
     obstacle_timestamps = find_obstacle_timestamps(obstacle_id, critical_interval, L4)
     obstacle_timestamps_after_critical_interval = find_obstacle_timestamps_after_critical_interval(obstacle_id, critical_interval, L4)
     ego_timestamps = find_ego_timestamps(L7, critical_interval)
 
-    system_prompt = """You are a JSON output engine.
+    system_prompt = f"""You are a JSON output engine.
 Adjust the trajectory of the dynamic obstacle in the critical time interval to make it more safety-critical, 
 so that the dynamic obstacle is more likely to produce a collision with the ego vehicle.
 
@@ -20,6 +20,7 @@ Only adjust the data explicitly. It is not your task to write a program or gener
 
 Only give me the data for the dynamic obstacle, not the ego vehicle. The ego vehicle data is not changeable.
 IMPORTANT: DO NOT PROVIDE CODE or any further text.
+{f"DO NOT REPEAT YOUR PREVIOUS MISTAKES. Your previous attempt failed because of the following reason: {previous_failed_reason}. Especially do not use the same point if it is not inside a lanelet." if previous_failed_reason else ""}
 """
 
     dynamic_obstacle_lanelet_info = ""

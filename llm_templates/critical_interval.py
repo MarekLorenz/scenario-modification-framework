@@ -2,13 +2,22 @@ import json
 from llm_templates.llm_utils import send_gemini_request
 from generation_types.generation import StepTwoGenerationResult, TimeInterval
 
+INTERRUPT_PROMPT = """
+Important note: Before proceeding, check if the ego vehicle is already in danger.
+If so, only reply with "interrupt". The scenario is already very critical and does not require further adaptation.
+"""
+
 def find_critical_interval(L7_mtl, L4_mtl, L1_mtl):
     # Gefahrenstufe für jedes Dynamic Obstacle definieren -> als Indikator um Loop zu unterbrechen
     system_prompt = f"""
 Important: Do not return any code, but just find the result through thinking.
+Decide if a traffic scenario is already very critical. If so, return "interrupt".
 Find the critical section for the ego car in the following traffic scenario (without returning code):
 For the obstacles, they are specified as follows:
-<obstacle_id>: G[<start_time>, <end_time>]: <lanelet_id>, G[<start_time>, <end_time>]: <lanelet_id>, ...
+<obstacle_id>: G[<start_time>, <end_time>]: <lanelet_id>,
+G[start_time, start_time]: TTC(<obstacle_id>, EGO) = <time to collision value of the obstacle and the ego vehicle>
+G[start_time, start_time]: Risk_level(<obstacle_id>, EGO) = <risk level of the obstacle and the ego vehicle on a scale from 1 (safe) to 5 (risky)>
+G[<start_time>, <end_time>]: <lanelet_id>, ...
 ...
 
 For the ego vehicle, it is specified as follows:
@@ -26,7 +35,7 @@ Write down the following json after your analysis. Only give me one dictionary, 
 }}
 
 Do not include any other text in your response, only the tuple that is the most critical.
-If you think the scenario is already severly safety-critical or a collision of the ego vehicle is likely, return "interrupt".
+{INTERRUPT_PROMPT}
 """
     user_prompt = f"""
 EGO VEHICLE MOVEMENTS:

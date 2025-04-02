@@ -3,8 +3,7 @@ import math
 from mtl_converter.L4_safety_metrics import time_to_collision
 from mtl_converter.utils import is_within_lanelet
 
-def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_positions: list[dict]) -> tuple[list[str], set[str]]:
-    csv_file_path = 'data/scenarios/relative_metrics.csv'
+def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_positions: list[dict], relative_metrics_csv_file_path: str) -> tuple[list[str], set[str]]:
 
     """
     Convert Layer 4 (dynamic obstacles) scenario to MTL scenario
@@ -30,20 +29,21 @@ def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_pos
                     break
 
             if found_lanelet != current_lanelet:
-                if current_lanelet is not None:
-                    movable_objects_mtl.append(f"G_[{start_time}, {time}]: occupy({dynamic_obstacle['id']}, {current_lanelet})")
-                    lanelets_mentioned.add(current_lanelet)
+                movable_objects_mtl.append(f"G_[{start_time}, {time}]: occupy({dynamic_obstacle['id']}, {current_lanelet})")
+                lanelets_mentioned.add(current_lanelet)
 
                 # Calculate distance only on entry to new lanelet
                 if idx < len(ego_positions):
                     ego_pos = ego_positions[idx]
-                    distance = _euclidean_distance(position, ego_pos)
+                    # distance = _euclidean_distance(position, ego_pos)
                     # movable_objects_mtl.append(f"G[{start_time}, {start_time}] Distance ego to {dynamic_obstacle['id']}: {distance:.2f}m")
                     min_ttc =  time_to_collision(timestamp=float(start_time),
                                                   obstacle_id=float(dynamic_obstacle['id']), 
-                                                  csv_file_path=csv_file_path)
-                    movable_objects_mtl.append(f"G[{start_time}, {start_time}] TTC({dynamic_obstacle['id']}, EGO): {"No collision" if min_ttc == math.inf else f"{min_ttc}s"}")
+                                                  csv_file_path=relative_metrics_csv_file_path)
+                    movable_objects_mtl.append(f"G[{start_time}, {start_time}]: TTC({dynamic_obstacle['id']}, EGO) = {"No collision" if min_ttc == math.inf else f"{min_ttc}s"}")
                     
+                    safety_zone = _get_safety_zone(timestamp, ego_pos)
+                    movable_objects_mtl.append(f"G[{start_time}, {start_time}]: Risk_level({dynamic_obstacle['id']}, EGO) = {safety_zone}")
                 current_lanelet = found_lanelet
                 start_time = time
 
@@ -138,3 +138,52 @@ def get_lanelets_for_obstacle(
 def _euclidean_distance(pos1: dict, pos2: dict) -> float:
     """Calculate Euclidean distance between two positions"""
     return ((float(pos1['x']) - float(pos2['x']))**2 + (float(pos1['y']) - float(pos2['y']))**2)**0.5
+
+def calculate_ttb(obstacle_velocity: float, max_deceleration: float = 7.0) -> float:
+    """
+    Calculate Time To Brake (TTB) for an obstacle
+    
+    Args:
+        obstacle_velocity: Current velocity of the obstacle in m/s
+        max_deceleration: Maximum deceleration capability in m/s^2 (default 7.0 m/s^2)
+    
+    Returns:
+        Time to brake in seconds
+    """
+    if obstacle_velocity <= 0:
+        return 0
+    return obstacle_velocity / max_deceleration
+
+def _get_safety_zone(dynamic_obstacle_timestamp: dict, ego_position) -> list[dict]:
+    # on a scale from 1 to 5 - how risky is the obstacle for the ego vehicle 
+    obstacle_position = dynamic_obstacle_timestamp['position']
+    obstacle_velocity = float(dynamic_obstacle_timestamp['velocity'])
+    
+    # Calculate distance between ego and obstacle
+    distance = _euclidean_distance(ego_position, obstacle_position)
+    # calculate time to brake
+    ttb = calculate_ttb(obstacle_velocity)
+    
+    # Define distance thresholds (in meters)
+    CRITICAL_DISTANCE = 10  # Very close
+    SAFE_DISTANCE = 50     # Reasonably safe distance
+    
+    # Normalize distance factor (1 when very close, 0 when far)
+    distance_factor = max(0, min(1, (SAFE_DISTANCE - distance) / (SAFE_DISTANCE - CRITICAL_DISTANCE)))
+    
+    if ttb > 0:
+        # Combine TTB and distance into risk factor
+        # Both factors contribute equally to the risk
+        ttb_factor = 1 - math.exp(-ttb/2)
+        combined_risk = (ttb_factor + distance_factor) / 2
+        
+        # Higher weight to distance when very close
+        if distance < CRITICAL_DISTANCE:
+            combined_risk = 0.7 * distance_factor + 0.3 * ttb_factor
+            
+        risk_level = max(1, min(5, math.ceil(combined_risk * 5)))
+    else:
+        # Even for stationary obstacles, consider distance
+        risk_level = max(1, min(3, math.ceil(distance_factor * 3)))
+    
+    return risk_level

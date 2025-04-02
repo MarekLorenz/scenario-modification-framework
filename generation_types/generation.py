@@ -7,6 +7,7 @@ class TimeInterval(BaseModel):
     start_time: int
     end_time: int
 
+# include boolean for collision true and false
 class StepTwoGenerationResult(BaseModel):
     critical_obstacle_id: str
     critical_interval: TimeInterval

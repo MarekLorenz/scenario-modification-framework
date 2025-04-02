@@ -140,8 +140,8 @@ def extract_ego_trajectory(file_path):
                 'orientation': float(row['orientation']),
                 'velocity': float(row['velocity']),
                 'acceleration': float(row['acceleration']),
-                'lanelet_id': int(row['lanelet_id']) if row['lanelet_id'] else None,
-                'goal_lanelet_id': int(row['goal_lanelet_id']),
+                'lanelet_id': int(row['lanelet_id']) if row['lanelet_id'] else 1,
+                'goal_lanelet_id': int(row['goal_lanelet_id']) if row['goal_lanelet_id'] else 1,
                 'time_horizon': float(row['time_horizon'])
             }
             trajectory.append(timestep_data)

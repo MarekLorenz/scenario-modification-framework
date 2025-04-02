@@ -64,7 +64,6 @@ def update_xml_scenario(original_path: str,
                 
                 # Convert all values to strings
                 time_str = str(point_data.get('time', ''))
-                # TODO: here we can check the feasibility via is wihtin lanelet
                 x_str = f"{point_data['position']['x']:.4f}" if isinstance(point_data['position']['x'], float) else str(point_data['position']['x'])
                 x_float = float(x_str)
                 y_str = f"{point_data['position']['y']:.4f}" if isinstance(point_data['position']['y'], float) else str(point_data['position']['y'])
@@ -73,22 +72,31 @@ def update_xml_scenario(original_path: str,
                 velocity_str = f"{point_data['velocity']:.4f}" if isinstance(point_data['velocity'], float) else str(point_data['velocity'])
                 accel_str = f"{point_data['acceleration']:.4f}" if isinstance(point_data['acceleration'], float) else str(point_data['acceleration'])
 
+                # ====== possibilities for unfeasible trajectories ======
+                # - returning to a previously visited lanelet
+                # - driving off the road
+                # - driving in the wrong direction @TODO
                 point_is_within_lanelet = False
-                lanelets_visited = {}
-                # TODO: what are other possibilities for unfeasible trajectories
+                lanelets_visited = []  # Change to list to maintain order
+
                 for lanelet in L1['lanelet']:
-
-                    postion = {"x": x_float,
+                    position = {"x": x_float,
                                "y": y_float}
-                    if is_within_lanelet(postion, lanelet):
+                    if is_within_lanelet(position, lanelet):
                         point_is_within_lanelet = True
-                        # if lanelet['id'] in lanelets_visited:
-                        #     raise RuntimeError("Modified position not inside lanelet")
-                        # lanelets_visited.update(lanelet[id])
+                        current_lanelet = lanelet['id']
+                        
+                        # Check if we're trying to return to a previously visited lanelet
+                        if current_lanelet in lanelets_visited[:-1]:  # Allow last lanelet in sequence
+                            raise RuntimeError(f"Dynamic obstacle {obstacle_id} returned to a previously visited lanelet: {current_lanelet}")
+                            
+                        # Only add if it's different from the last visited lanelet
+                        if not lanelets_visited or lanelets_visited[-1] != current_lanelet:
+                            lanelets_visited.append(current_lanelet)
                         break
-
+                
                 if not point_is_within_lanelet:
-                    raise RuntimeError("Modified position not inside lanelet")
+                    raise RuntimeError(f"Modified position not inside lanelet: {position}")
                 # Time
                 time_elem = ET.SubElement(state, 'time')
                 ET.SubElement(time_elem, 'exact').text = time_str
