@@ -1,4 +1,5 @@
 import argparse
+import json
 from llm_templates.critical_interval import find_critical_interval, parse_critical_interval_output
 from llm_templates.critical_obstacles import find_critical_obstacles, parse_critical_obstacles_output
 from mtl_converter.L1_converter import convert_l1_to_mtl
@@ -27,12 +28,12 @@ def main():
     print(f"Modified scenario: {modified_scenario}")
 
     # Visualize the dynamic obstacles before and after modification
-    visualize_dynamic_obstacles(file, scenario_name)
-    visualize_dynamic_obstacles(modified_scenario, "updated_scenario")
+    # visualize_dynamic_obstacles(file, scenario_name)
+    # visualize_dynamic_obstacles(modified_scenario, "updated_scenario")
 
 def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: str, n=1, previous_failed_reason: str = None):
     # Termination condition: maximum recursion depth = 3
-    if n > 3:
+    if n > 1:
         return scenario_filepath
     
     print(f"Running modification for the {n}th time")
@@ -84,6 +85,8 @@ def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: 
             return scenario_filepath
         step_two_result = parse_critical_interval_output(critical_interval)
         print(f"Step 2 result: {step_two_result}")
+        # # save simulation result for accuracy analysis
+        # save_simulation_result(scenario_name, step_two_result.critical_obstacle_id)
 
         # LLM Step 3: Modify the scenario
         start_time = step_two_result.critical_interval.start_time
@@ -121,6 +124,29 @@ def visualize_dynamic_obstacles(scenario_filepath: str, scenario_name: str):
     layers = assign_layers(information_dict)
     L4 = layers["L4_MovableObjects"]
     visualize_dynamic_obstacles_with_time(L4, show_plot=True)
+
+import json
+from pathlib import Path
+
+def save_simulation_result(scenario_name: str, critical_obstacle_id: str):
+    result_file = Path("data/simulation_results/result.json")
+    
+    # Create directory if it doesn't exist
+    result_file.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Load existing results or create new dict if file doesn't exist
+    if result_file.exists():
+        with open(result_file, "r") as f:
+            result_dict = json.load(f)
+    else:
+        result_dict = {}
+    
+    # Update with new result
+    result_dict[scenario_name] = critical_obstacle_id
+    
+    # Save back to file
+    with open(result_file, "w") as f:
+        json.dump(result_dict, f, indent=4)
 
 if __name__ == "__main__":
     main()
