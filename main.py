@@ -18,22 +18,27 @@ from scenario_modification.update_xml import update_xml_scenario
 def main():
     parser = argparse.ArgumentParser(description='Process scenario name')
     parser.add_argument('-s', '--scenario', type=str, required=True,
-                       help='Scenario name (e.g. BEL_Antwerp-1_14_T-1)')
+                       help='REQUIRED: Scenario name (e.g. BEL_Antwerp-1_14_T-1)')
+    parser.add_argument('-n', '--num_iterations', type=int, required=False, default=3,
+                       help='OPTIONAL: Maximum number of iterations (default: 3)')
+    parser.add_argument('-v', '--visualize', type=bool, required=False, default=False,
+                       help='OPTIONAL: Visualize the dynamic obstacle trajectories before and after modification (default: False)')
     
     args = parser.parse_args()
     scenario_name = args.scenario
     file = f'data/scenarios/{scenario_name}.xml'
     ego_trajectory_file = f"data/ego_trajectories/ego_trajectory_{scenario_name}.csv"
-    modified_scenario = helper(file, scenario_name, ego_trajectory_file)
+    modified_scenario = helper(file, scenario_name, ego_trajectory_file, args.num_iterations)
     print(f"Modified scenario: {modified_scenario}")
 
-    # Visualize the dynamic obstacles before and after modification
-    # visualize_dynamic_obstacles(file, scenario_name)
-    # visualize_dynamic_obstacles(modified_scenario, "updated_scenario")
+    if args.visualize:
+        # Visualize the dynamic obstacles before and after modification
+        visualize_dynamic_obstacles(file, scenario_name)
+        visualize_dynamic_obstacles(modified_scenario, "updated_scenario")
 
-def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: str, n=1, previous_failed_reason: str = None):
+def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: str, n=1, previous_failed_reason: str = None, num_iterations: int = 3):
     # Termination condition: maximum recursion depth = 3
-    if n > 1:
+    if n > num_iterations:
         return scenario_filepath
     
     print(f"Running modification for the {n}th time")
@@ -78,17 +83,18 @@ def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: 
 
         print(f"L4_mtl: {L4_mtl}")
         critical_interval = find_critical_interval(L7_mtl, L4_mtl, L1_mtl)
-        # Additional llm-based termination condition
-        if "interrupt" in critical_interval.lower():
+        # Additional llm-based termination condition when a scenario is already very critical
+        step_two_result = parse_critical_interval_output(critical_interval)
+        if step_two_result.has_collision:
             print("Interrupt signal received. Returning current scenario.")
             interrupt = True
             return scenario_filepath
-        step_two_result = parse_critical_interval_output(critical_interval)
         print(f"Step 2 result: {step_two_result}")
         # # save simulation result for accuracy analysis
         # save_simulation_result(scenario_name, step_two_result.critical_obstacle_id)
 
         # LLM Step 3: Modify the scenario
+        # @TODO: only repeat step 3 in every iteration
         start_time = step_two_result.critical_interval.start_time
         end_time = step_two_result.critical_interval.end_time
         dynamic_obstacle_lanelets = get_lanelets_for_obstacle(L4, L1, step_two_result.critical_obstacle_id, start_time, end_time)

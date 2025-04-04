@@ -11,7 +11,7 @@ def find_critical_interval(L7_mtl, L4_mtl, L1_mtl):
     # Gefahrenstufe für jedes Dynamic Obstacle definieren -> als Indikator um Loop zu unterbrechen
     system_prompt = f"""
 Important: Do not return any code, but just find the result through thinking.
-Decide if a traffic scenario is already very critical. If so, return "interrupt".
+Decide if the ego car in a given scenario is involved in a collision. If so, set the "has_collision" flag to true.
 Find the critical section for the ego car in the following traffic scenario (without returning code):
 For the obstacles, they are specified as follows:
 <obstacle_id>: G[<start_time>, <end_time>]: <lanelet_id>,
@@ -31,7 +31,8 @@ Write down the following json after your analysis. Only give me one dictionary, 
     "critical_obstacle_id": "<string: id of the dynamic obstacle that is most likely to collide with the ego vehicle>",
     "critical_interval_start_time": <int: start time of the critical interval>,
     "critical_interval_end_time": <int: end time of the critical interval>,
-    "critical_lanelet_id": "<string: lanelet id where the collision might happen>"
+    "critical_lanelet_id": "<string: lanelet id where the collision might happen>",
+    "has_collision": <bool: true, if the data is indicating a collision, false otherwise>
 }}
 
 Do not include any other text in your response, only the tuple that is the most critical.
@@ -65,5 +66,6 @@ def parse_critical_interval_output(output: str) -> StepTwoGenerationResult:
     return StepTwoGenerationResult(
         critical_obstacle_id=output_dict["critical_obstacle_id"],
         critical_interval=time_interval,
-        critical_lanelet_id=output_dict["critical_lanelet_id"]
+        critical_lanelet_id=output_dict["critical_lanelet_id"],
+        has_collision=output_dict["has_collision"]
     )

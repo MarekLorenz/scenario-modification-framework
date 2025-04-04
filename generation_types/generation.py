@@ -12,6 +12,7 @@ class StepTwoGenerationResult(BaseModel):
     critical_obstacle_id: str
     critical_interval: TimeInterval
     critical_lanelet_id: str
+    has_collision: bool
 
 class StepThreeGenerationResult(BaseModel):
     updated_scenario_dict: dict
