@@ -25,7 +25,7 @@ def compare_results():
             csv_dict[scenario_name] = obstacle_id
     
     # Load JSON data
-    json_path = Path('/Users/mareklorenz/Development/scenario-modification-framework/data/simulation_results/FINAL_all_scenarios_2_0_slightly_modified.json')
+    json_path = Path('/Users/mareklorenz/Development/scenario-modification-framework/data/simulation_results/all_scenarios_4o.json')
     with open(json_path, 'r') as f:
         json_dict = json.load(f)
     
@@ -47,6 +47,7 @@ def compare_results():
         if scenario in json_dict and json_dict[scenario]["has_collision"] == False:
             non_collision_correct.append(scenario)
         elif scenario not in json_dict:
+            non_collision_incorrect.append(scenario)
             error_scenarios.append(scenario)
         else:
             non_collision_incorrect.append(scenario)
@@ -55,6 +56,7 @@ def compare_results():
         if scenario in json_dict and json_dict[scenario]["has_collision"] == True:
             collision_correct.append(scenario)
         elif scenario not in json_dict:
+            collision_incorrect.append(scenario)
             error_scenarios.append(scenario)
         else:
             collision_incorrect.append(scenario)
@@ -62,7 +64,7 @@ def compare_results():
     print("Collision incorrect:", len(collision_incorrect))
     print("Non-collision correct:", len(non_collision_correct))
     print("Non-collision incorrect:", len(non_collision_incorrect))
-    print("Error scenarios:", error_scenarios)
+    print("Error scenarios:", len(error_scenarios))
 
 if __name__ == "__main__":
     compare_results()

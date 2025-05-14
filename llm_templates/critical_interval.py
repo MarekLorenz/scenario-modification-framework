@@ -2,10 +2,6 @@ import json
 from llm_templates.llm_utils import get_consistency_params, send_gemini_request, send_openai_request
 from generation_types.generation import StepTwoGenerationResult, TimeInterval
 
-INTERRUPT_PROMPT = """
-Important note: Before proceeding, check if the ego vehicle is already in danger.
-If so, only reply with "interrupt". The scenario is already very critical and does not require further adaptation.
-"""
 
 def find_critical_interval(L7_mtl, L4_mtl, L1_mtl):
     system_prompt = f"""
@@ -40,9 +36,17 @@ Write down the following json after your analysis. Only give me one dictionary, 
 }}
 
 Do not include any other text in your response, only the tuple that is the most critical.
-{INTERRUPT_PROMPT}
 """
+    ablation_study = False
     user_prompt = f"""
+{f'''Write down the following json after your analysis. Only give me one dictionary, DO NOT WRITE ANY CODE OR PROGRAM:
+{{
+    "critical_obstacle_id": "<string: id of the dynamic obstacle that is most likely to collide with the ego vehicle or the one with the highest risk level>",
+    "critical_interval_start_time": <int: start time of the critical interval>,
+    "critical_interval_end_time": <int: end time of the critical interval>,
+    "critical_lanelet_id": "<string: lanelet id where the collision might happen>",
+    "has_collision": <bool: true, if the data is indicating a collision (meaning both TTC_long and TTC_lat are close to 0.0), false otherwise. If no TTC is specified, set to false.>
+}}''' if ablation_study else ""}    
 EGO VEHICLE MOVEMENTS:
 {"\n".join(L7_mtl)}
 

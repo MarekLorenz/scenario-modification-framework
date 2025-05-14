@@ -20,7 +20,7 @@ def main():
     parser = argparse.ArgumentParser(description='Process scenario name')
     parser.add_argument('-s', '--scenario', type=str, required=True,
                        help='REQUIRED: Scenario name (e.g. BEL_Antwerp-1_14_T-1)')
-    parser.add_argument('-n', '--num_iterations', type=int, required=False, default=1,
+    parser.add_argument('-n', '--num_iterations', type=int, required=False, default=3,
                        help='OPTIONAL: Maximum number of iterations (default: 3)')
     parser.add_argument('-v', '--visualize', type=bool, required=False, default=False,
                        help='OPTIONAL: Visualize the dynamic obstacle trajectories before and after modification (default: False)')
@@ -38,64 +38,65 @@ def main():
         visualize_dynamic_obstacles(file, scenario_name)
         visualize_dynamic_obstacles(modified_scenario, "updated_scenario")
 
-def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: str, previous_failed_reason: str = None, num_iterations: int = 1, n: int = 1):
+def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: str, previous_failed_reason: str = None, num_iterations: int = 3, n: int = 1):
     # Termination condition: maximum recursion depth = 3
     print(f"num_iterations: {num_iterations}")
     if n > num_iterations:
         return scenario_filepath
-    
+        
     print(f"Running modification for the {n}th time")
     interrupt = False
-    convert_single_xml_to_json(scenario_filepath, 'data/json_scenarios')
-    information_dict = extract_important_information(f'data/json_scenarios/{scenario_name}.json')
+    try:
+        convert_single_xml_to_json(scenario_filepath, 'data/json_scenarios')
+        information_dict = extract_important_information(f'data/json_scenarios/{scenario_name}.json')
 
-    layers = assign_layers(information_dict)
+        layers = assign_layers(information_dict)
 
-    # Extract individual layers
-    L1 = layers["L1_RoadLevel"]
-    L4 = layers["L4_MovableObjects"]
-    # ego layer
-    L7 = extract_ego_trajectory(ego_trajectory_filepath)
+        # Extract individual layers
+        L1 = layers["L1_RoadLevel"]
+        L4 = layers["L4_MovableObjects"]
+        # ego layer
+        L7 = extract_ego_trajectory(ego_trajectory_filepath)
 
-    # convert layers to mtl
-    L4_mtl = convert_l4_to_mtl_simplified(L4, L1)
-    L7_mtl = convert_l7_to_mtl_simplified(L7, L1)
+        # convert layers to mtl
+        L4_mtl = convert_l4_to_mtl_simplified(L4, L1)
+        L7_mtl = convert_l7_to_mtl_simplified(L7, L1)
 
-    #  ==== generate the relative metrics CSV file ====
-    # generate the dynamic obstacles csv file
-    obstacle_csv_path = f'data/obstacles/{scenario_name}_dynamic_obstacles_with_lanelets.csv'
-    polygons = lanelets_to_polygons(L1)
-    dynamic_obstacles_with_lanelets(L4, polygons, obstacle_csv_path)
-    obstacles_path = f'data/obstacles/{scenario_name}_dynamic_obstacles.csv'
-    extract_every_nth_timestep(obstacle_csv_path, obstacles_path, n=1)
+        #  ==== generate the relative metrics CSV file ====
+        # generate the dynamic obstacles csv file
+        obstacle_csv_path = f'data/obstacles/{scenario_name}_dynamic_obstacles_with_lanelets.csv'
+        polygons = lanelets_to_polygons(L1)
+        dynamic_obstacles_with_lanelets(L4, polygons, obstacle_csv_path)
+        obstacles_path = f'data/obstacles/{scenario_name}_dynamic_obstacles.csv'
+        extract_every_nth_timestep(obstacle_csv_path, obstacles_path, n=1)
 
-    relative_metrics_csv_file_path = f'data/scenarios/{scenario_name}_relative_metrics.csv'
-    process_single_scenario(ego_trajectory_filepath, obstacles_path, scenario_name)
-    
-    # LLM Step 1: find the critical obstacles
-    print(f"L4_mtl: {L4_mtl}")
-    print(f"L7_mtl: {L7_mtl}")
-    critical_obstacles = find_critical_obstacles(L4_mtl, L7_mtl)
-    step_one_result = parse_critical_obstacles_output(critical_obstacles)
-    print(f"Critical obstacles: {step_one_result.critical_obstacle_ids}")
-    
-    # LLM Step 2: find the critical interval
-    ego_positions = extract_ego_positions(L7)
-    L4_mtl, L4_lanelets_mentioned = convert_l4_to_mtl(L4, L1, step_one_result.critical_obstacle_ids, ego_positions, relative_metrics_csv_file_path)
-    L7_mtl, L7_lanelets_mentioned = convert_l7_to_mtl(L7, L1)
-    L1_mtl = convert_l1_to_mtl(L1, list(L4_lanelets_mentioned) + list(L7_lanelets_mentioned))
+        relative_metrics_csv_file_path = f'data/scenarios/{scenario_name}_relative_metrics.csv'
+        process_single_scenario(ego_trajectory_filepath, obstacles_path, scenario_name)
+        
+        # LLM Step 1: find the critical obstacles
+        print(f"L4_mtl: {L4_mtl}")
+        print(f"L7_mtl: {L7_mtl}")
+        critical_obstacles = find_critical_obstacles(L4_mtl, L7_mtl)
+        step_one_result = parse_critical_obstacles_output(critical_obstacles)
+        print(f"Critical obstacles: {step_one_result.critical_obstacle_ids}")
+        
+        # LLM Step 2: find the critical interval
+        ego_positions = extract_ego_positions(L7)
+        L4_mtl, L4_lanelets_mentioned = convert_l4_to_mtl(L4, L1, step_one_result.critical_obstacle_ids, ego_positions, relative_metrics_csv_file_path)
+        L7_mtl, L7_lanelets_mentioned = convert_l7_to_mtl(L7, L1)
+        L1_mtl = convert_l1_to_mtl(L1, list(L4_lanelets_mentioned) + list(L7_lanelets_mentioned))
 
-    print(f"L4_mtl: {L4_mtl}")
-    critical_interval = find_critical_interval(L7_mtl, L4_mtl, L1_mtl)
-    # Additional llm-based termination condition when a scenario is already very critical
-    step_two_result = parse_critical_interval_output(critical_interval)
-    # if step_two_result.has_collision:
-    #     print("Interrupt signal received. Returning current scenario.")
-    #     interrupt = True
-    #     return scenario_filepath
-    print(f"Step 2 result: {step_two_result}")
-    #save simulation result for accuracy analysis
-    save_simulation_result(scenario_name, step_two_result.critical_obstacle_id, step_two_result.has_collision)
+        print(f"L4_mtl: {L4_mtl}")
+        critical_interval = find_critical_interval(L7_mtl, L4_mtl, L1_mtl)
+        # Additional llm-based termination condition when a scenario is already very critical
+        step_two_result = parse_critical_interval_output(critical_interval)
+        # if step_two_result.has_collision:
+        #     print("Interrupt signal received. Returning current scenario.")
+        #     interrupt = True
+        #     return scenario_filepath
+        print(f"Step 2 result: {step_two_result}")
+        # save simulation result for accuracy analysis
+        save_simulation_result(scenario_name, step_two_result.critical_obstacle_id, step_two_result.has_collision)
 
         # LLM Step 3: Modify the scenario
         # start_time = step_two_result.critical_interval.start_time
@@ -110,16 +111,15 @@ def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: 
         # scenario_name = "updated_scenario"
         # output_file = f'updated_scenario.xml'
 
-    # except Exception as e:
-    #     print(f"Error occurred - Retrying: {e}")
-    #     output_file = scenario_filepath
-    #     # flow prompting loop with meta knowledge
-    #     previous_failed_reason = e
+    except Exception as e:
+        print(f"Error occurred - Retrying: {e}")
+        # output_file = scenario_filepath
+        # # flow prompting loop with meta knowledge
+        # previous_failed_reasonp = e
 
-    # finally:
-    return scenario_filepath
+    finally:
         # if interrupt:
-        #     return scenario_filepath
+        return scenario_filepath
         # updated_n = n + 1
         # return helper(
         #     scenario_filepath=output_file,
@@ -137,7 +137,7 @@ def visualize_dynamic_obstacles(scenario_filepath: str, scenario_name: str):
     visualize_dynamic_obstacles_with_time(L4, show_plot=True)
 
 def save_simulation_result(scenario_name: str, critical_obstacle_id: str, has_collision: bool):
-    result_file = Path("data/simulation_results/all_scenarios_openai_slightly_modified.json")
+    result_file = Path("data/simulation_results/all_scenarios_4o.json")
     
     # Create directory if it doesn't exist
     result_file.parent.mkdir(parents=True, exist_ok=True)
