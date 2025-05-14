@@ -12,18 +12,20 @@ def compare_results():
             scenario_name = row['Scenario_Name']
             collision_id = row['CollisionObstacleID']
             extreme_risk_id = row['ExtremeRiskObstacleID']
-            obstacle_id = collision_id if collision_id and collision_id.lower() != 'none' else extreme_risk_id
-            if obstacle_id and obstacle_id.lower() != 'none':
-                csv_dict[scenario_name] = obstacle_id
+            obstacle_id = [collision_id, extreme_risk_id]
+            csv_dict[scenario_name] = obstacle_id
     
     # Load JSON data
-    json_path = Path('/Users/mareklorenz/Development/scenario-modification-framework/data/simulation_results/result.json')
+    json_path = Path('/Users/mareklorenz/Development/scenario-modification-framework/data/simulation_results/all_scenarios_2_5_slightly_modified.json')
     with open(json_path, 'r') as f:
         json_dict = json.load(f)
     
+    print(json_dict)
+    print(csv_dict)
     # Count matches
-    matches = sum(1 for scenario in csv_dict if scenario in json_dict and csv_dict[scenario] == json_dict[scenario])
-    total = len(set(csv_dict.keys()) | set(json_dict.keys()))
+    matches = sum(1 for scenario in csv_dict if scenario in json_dict and json_dict[scenario]["critical_obstacle_id"] in csv_dict[scenario])
+    # total = len(set(csv_dict.keys()) | set(json_dict.keys()))
+    total = len(csv_dict)
     
     accuracy = (matches / total) * 100
     print(f"Accuracy: {accuracy:.2f}% ({matches}/{total} scenarios match)")

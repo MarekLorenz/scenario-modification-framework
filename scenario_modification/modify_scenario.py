@@ -11,8 +11,10 @@ def modify_scenario(step_two_result: StepTwoGenerationResult, L1: dict, L4: dict
     ego_timestamps = find_ego_timestamps(L7, critical_interval)
 
     system_prompt = f"""You are a JSON output engine.
-Adjust the trajectory of the dynamic obstacle in the critical time interval to make it more safety-critical, 
+Adjust the trajectory of the dynamic obstacle (attacker car) in the critical time interval to make it more safety-critical, 
 so that the dynamic obstacle is more likely to produce a collision with the ego vehicle.
+Keep it feasible and realistic.
+Consider and maintain the driving directions and traffic rules. Do not let the dynamic obstacle make unrealistic maneuvers.
 
 Alter the data for the dynamic obstacle and give me the full updated data in the same format. DO NOT WRITE ANY CODE.
 
@@ -57,6 +59,7 @@ Dynamic obstacle trajectory (to be adjusted by you):
 
 This is very important: Start answering with ```json [...
 """
+    print(user_prompt)
     
     response = send_gemini_request(system_prompt, user_prompt, **get_consistency_params())
     print("Step 3: ", response)

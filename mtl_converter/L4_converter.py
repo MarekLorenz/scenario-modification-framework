@@ -1,6 +1,6 @@
 # requires L1 for lanelet information
 import math
-from mtl_converter.L4_safety_metrics import time_to_collision
+from mtl_converter.L4_safety_metrics import TTC_Evaluation, time_to_collision
 from mtl_converter.utils import is_within_lanelet
 
 def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_positions: list[dict], relative_metrics_csv_file_path: str) -> tuple[list[str], set[str]]:
@@ -17,8 +17,17 @@ def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_pos
     for dynamic_obstacle in [x for x in L4['dynamicObstacle'] if x['id'] in critical_obstacles]:
         current_lanelet = None
         start_time = 0
+        
+        # Find first lanelet before starting the loop
+        first_position = dynamic_obstacle['trajectory'][0]['position']
+        for lanelet in L1['lanelet']:
+            if is_within_lanelet(first_position, lanelet):
+                current_lanelet = lanelet['id']
+                break
+        
         for idx, timestamp in enumerate(dynamic_obstacle['trajectory']):
             position = timestamp['position']
+            
             time = timestamp['time']
             found_lanelet = None
             
@@ -29,29 +38,66 @@ def convert_l4_to_mtl(L4: dict, L1: dict, critical_obstacles: list[str], ego_pos
                     break
 
             if found_lanelet != current_lanelet:
-                movable_objects_mtl.append(f"G_[{start_time}, {time}]: occupy({dynamic_obstacle['id']}, {current_lanelet})")
-                lanelets_mentioned.add(current_lanelet)
+                if current_lanelet is not None:  # Only output if we had a valid lanelet
+                    movable_objects_mtl.append(f"G_[{start_time}, {time}]: occupy({dynamic_obstacle['id']}, {current_lanelet})")
+                    lanelets_mentioned.add(current_lanelet)
 
-                # Calculate distance only on entry to new lanelet
-                if idx < len(ego_positions):
-                    ego_pos = ego_positions[idx]
-                    # distance = _euclidean_distance(position, ego_pos)
-                    # movable_objects_mtl.append(f"G[{start_time}, {start_time}] Distance ego to {dynamic_obstacle['id']}: {distance:.2f}m")
-                    min_ttc =  time_to_collision(timestamp=float(start_time),
-                                                  obstacle_id=float(dynamic_obstacle['id']), 
-                                                  csv_file_path=relative_metrics_csv_file_path)
-                    movable_objects_mtl.append(f"G[{start_time}, {start_time}]: TTC({dynamic_obstacle['id']}, EGO) = {"No collision" if min_ttc == math.inf else f"{min_ttc}s"}")
-                    
-                    safety_zone = _get_safety_zone(timestamp, ego_pos)
-                    movable_objects_mtl.append(f"G[{start_time}, {start_time}]: Risk_level({dynamic_obstacle['id']}, EGO) = {safety_zone}")
+                    # Calculate minimum TTC for the entire duration in the lanelet
+                    min_ttc = math.inf, math.inf # long, lat
+                    min_ttc_timestamp = start_time
+                    min_distance = math.inf
+
+                    for t in range(int(start_time), int(time) + 1):
+                        ttc_evaluation: TTC_Evaluation = time_to_collision(timestamp=float(t),
+                                                      obstacle_id=float(dynamic_obstacle['id']), 
+                                                      csv_file_path=relative_metrics_csv_file_path)
+                        current_ttc_long, current_ttc_lat = ttc_evaluation.ttc_long, ttc_evaluation.ttc_lat
+                        current_distance = euclidean_distance(position, ego_positions[int(t)]) if not int(t) >= len(ego_positions) else math.inf
+
+                        if (current_ttc_long < 10 and current_ttc_lat < 10):
+                            min_ttc = current_ttc_long, current_ttc_lat
+                            min_ttc_timestamp = t
+                            min_distance = current_distance
+                    distance = euclidean_distance(position, ego_positions[int(min_ttc_timestamp)]) if not int(min_ttc_timestamp) >= len(ego_positions) else math.inf
+                    if min_ttc[0] != math.inf:
+                        movable_objects_mtl.append(f"F[{start_time}, {time}]: min_TTC_longitudinal = {min_ttc[0]}s AND min_TTC_lateral = {min_ttc[1]}s AND DTC = {distance}m")
+                
                 current_lanelet = found_lanelet
                 start_time = time
 
+        # Add the final lanelet occupation
         if current_lanelet is not None:
             movable_objects_mtl.append(f"G_[{start_time}, {time}]: occupy({dynamic_obstacle['id']}, {current_lanelet})")
             lanelets_mentioned.add(current_lanelet)
+            
+            # Calculate minimum TTC for the final lanelet
+            min_ttc = math.inf, math.inf # long, lat
+            min_ttc_timestamp = start_time
+            min_distance = math.inf
 
+            for t in range(int(start_time), int(time) + 1):
+                ttc_evaluation: TTC_Evaluation = time_to_collision(timestamp=float(t),
+                                                obstacle_id=float(dynamic_obstacle['id']), 
+                                                csv_file_path=relative_metrics_csv_file_path)
+                direction_type = ttc_evaluation.direction_type
+                current_ttc_long, current_ttc_lat = ttc_evaluation.ttc_long, ttc_evaluation.ttc_lat
+                current_distance = euclidean_distance(position, ego_positions[int(t)]) if not int(t) >= len(ego_positions) else math.inf
+
+                if (current_ttc_long < 1 and current_ttc_lat < 1) and (current_ttc_long + current_ttc_lat < min_ttc[0] + min_ttc[1] 
+                                                or (current_ttc_long + current_ttc_lat == min_ttc[0] + min_ttc[1] and current_distance < min_distance)):
+                    min_ttc = current_ttc_long, current_ttc_lat
+                    min_ttc_timestamp = t
+                    min_distance = current_distance
+                
+            distance = euclidean_distance(position, ego_positions[int(min_ttc_timestamp)]) if not int(min_ttc_timestamp) >= len(ego_positions) else math.inf
+            if min_ttc[0] != math.inf:
+                movable_objects_mtl.append(f"F[{start_time}, {time}]: min_TTC_longitudinal = {min_ttc[0]}s AND min_TTC_lateral = {min_ttc[1]}s AND DTC = {distance}m")
+        
     return movable_objects_mtl, lanelets_mentioned
+
+def euclidean_distance(pos1: dict, pos2: dict) -> float:
+    """Calculate Euclidean distance between two positions"""
+    return ((float(pos1['x']) - float(pos2['x']))**2 + (float(pos1['y']) - float(pos2['y']))**2)**0.5
 
 def convert_l4_to_mtl_simplified(L4: dict, L1: dict) -> list[str]:
     """
@@ -135,10 +181,6 @@ def get_lanelets_for_obstacle(
     
     return occupied
 
-def _euclidean_distance(pos1: dict, pos2: dict) -> float:
-    """Calculate Euclidean distance between two positions"""
-    return ((float(pos1['x']) - float(pos2['x']))**2 + (float(pos1['y']) - float(pos2['y']))**2)**0.5
-
 def calculate_ttb(obstacle_velocity: float, max_deceleration: float = 7.0) -> float:
     """
     Calculate Time To Brake (TTB) for an obstacle
@@ -160,7 +202,7 @@ def _get_safety_zone(dynamic_obstacle_timestamp: dict, ego_position) -> list[dic
     obstacle_velocity = float(dynamic_obstacle_timestamp['velocity'])
     
     # Calculate distance between ego and obstacle
-    distance = _euclidean_distance(ego_position, obstacle_position)
+    distance = euclidean_distance(ego_position, obstacle_position)
     # calculate time to brake
     ttb = calculate_ttb(obstacle_velocity)
     

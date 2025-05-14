@@ -1,5 +1,5 @@
 import json
-from llm_templates.llm_utils import send_gemini_request, get_consistency_params
+from llm_templates.llm_utils import send_openai_request, get_consistency_params
 from generation_types.generation import StepOneGenerationResult
 
 def find_critical_obstacles(L4_mtl, L7_mtl) -> str:
@@ -16,7 +16,7 @@ def find_critical_obstacles(L4_mtl, L7_mtl) -> str:
 
     For the ego vehicle, it is specified as follows:
     <ego_id>: G[<start_time>, <end_time>]: <lanelet_id>, G[<start_time>, <end_time>]: <lanelet_id>, ...
-
+ 
     Your task is to identify the critical obstacles in the scenario that might lead to a collision with the ego vehicle. Return a list of obstacle ids that are critical.
     The output should be a list of five obstacle ids, like this:
 
@@ -42,9 +42,10 @@ This is important: Start your response with ```json
 {{
     "critical_obstacle_ids": [
 }}
+
 """
 
-    response = send_gemini_request(system_prompt, user_prompt, **get_consistency_params())
+    response = send_openai_request(system_prompt, user_prompt, **get_consistency_params())
 
     return response
 

@@ -34,6 +34,7 @@ def main():
     visualize_and_save_ego_trajectory_with_lanelets(input_csv_path, output_csv_path, polygons, L7, show_plot=False)
 
     # file that will be used for simulation
+
     ego_path = f'data/ego_trajectories/ego_trajectory_{scenario_name}.csv'
     extract_ego_every_nth_timestep(output_csv_path, ego_path,n=1)
 

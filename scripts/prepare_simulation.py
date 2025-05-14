@@ -17,9 +17,9 @@ def process_scenarios():
     logs_dir.mkdir(parents=True, exist_ok=True)
     
     # Process collision scenarios
-    collision_dir = base_dir / 'Dataset/collision_scenarios'
+    collision_dir = base_dir / 'Dataset/all_scenarios_combined'
     if not collision_dir.exists():
-        print(f"Warning: Collision scenarios directory not found at {collision_dir}")
+        print(f"Warning: All scenarios directory not found at {collision_dir}")
     else:
         # Recursively find all XML files
         for xml_file in collision_dir.rglob('*.xml'):

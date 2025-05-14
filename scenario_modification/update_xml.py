@@ -46,7 +46,10 @@ def update_xml_scenario(original_path: str,
     """
     tree = ET.parse(original_path)
     root = tree.getroot()
-    
+
+    updated_times = [str(point_data.get('time', '')) for point_data in updated_data]
+    print(f"Updated times: {updated_times}")
+
     # Find obstacle
     for obstacle in root.findall('.//dynamicObstacle'):
         if obstacle.get('id') == obstacle_id:
@@ -54,9 +57,11 @@ def update_xml_scenario(original_path: str,
             if trajectory is None:
                 trajectory = ET.SubElement(obstacle, 'trajectory')
             else:
-                # Clear existing states
+                # Remove existing states with matching timestamps
                 for state in trajectory.findall('state'):
-                    trajectory.remove(state)
+                    time_elem = state.find('time/exact')
+                    if time_elem is not None and time_elem.text in updated_times:
+                        trajectory.remove(state)
             
             # Add new state elements with string conversion
             for point_data in updated_data:
@@ -119,6 +124,16 @@ def update_xml_scenario(original_path: str,
                 accel_elem = ET.SubElement(state, 'acceleration')
                 ET.SubElement(accel_elem, 'exact').text = accel_str
             
+            # Sort all states by time
+            states = trajectory.findall('state')
+            states.sort(key=lambda s: float(s.findtext('time/exact', '0')))
+            
+            # Clear and re-add sorted states
+            for state in list(trajectory.findall('state')):
+                trajectory.remove(state)
+            for state in states:
+                trajectory.append(state)
+
             # Handle output path
             if not output_path:
                 orig_path = Path(original_path)
