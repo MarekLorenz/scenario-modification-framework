@@ -1,8 +1,8 @@
 import json
-from llm_templates.llm_utils import send_gemini_request, get_consistency_params
+from llm_templates.llm_utils import send_openai_request, get_consistency_params
 from mtl_converter.L1_converter import get_adjacent_lanelets
 from generation_types.generation import StepTwoGenerationResult, TimeInterval
-
+ 
 def modify_scenario(step_two_result: StepTwoGenerationResult, L1: dict, L4: dict, L7: dict, ego_lanelets: list[int], dynamic_obstacle_lanelets: list[int], previous_failed_reason: str = None):
     obstacle_id = step_two_result.critical_obstacle_id
     critical_interval = step_two_result.critical_interval
@@ -61,7 +61,7 @@ This is very important: Start answering with ```json [...
 """
     print(user_prompt)
     
-    response = send_gemini_request(system_prompt, user_prompt, **get_consistency_params())
+    response = send_openai_request(system_prompt, user_prompt, **get_consistency_params())
     print("Step 3: ", response)
     return response
 

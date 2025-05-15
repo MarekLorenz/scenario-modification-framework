@@ -12,11 +12,11 @@ def compare_results():
             scenario_name = row['Scenario_Name']
             collision_id = row['CollisionObstacleID']
             extreme_risk_id = row['ExtremeRiskObstacleID']
-            obstacle_id = [collision_id]
+            obstacle_id = [collision_id, extreme_risk_id]
             csv_dict[scenario_name] = obstacle_id
     
     # Load JSON data
-    json_path = Path('/Users/mareklorenz/Development/scenario-modification-framework/data/simulation_results/FINAL_all_scenarios_2_0_slightly_modified.json')
+    json_path = Path('/Users/mareklorenz/Development/scenario-modification-framework/data/simulation_results/FINAL_all_scenarios_4o.json')
     with open(json_path, 'r') as f:
         json_dict = json.load(f)
     

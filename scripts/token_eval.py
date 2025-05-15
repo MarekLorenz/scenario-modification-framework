@@ -1,7 +1,7 @@
 import numpy as np
 
 # Read tokens from file
-with open('tokens', 'r') as f:
+with open('tokens_4o', 'r') as f:
     output_tokens = [int(line.strip()) for line in f.readlines()]
 
 # Calculate statistics for output tokens

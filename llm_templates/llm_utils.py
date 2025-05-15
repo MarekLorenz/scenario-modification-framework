@@ -58,7 +58,7 @@ def send_openai_request(system_prompt, user_prompt, **kwargs) -> str:
     openai.api_key = os.environ["OPENAI_API_KEY"]
     response = openai.chat.completions.create(
         model="gpt-4o",
-        messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
+        messages=[{"role": "user", "content": user_prompt}],
         **kwargs
     )
     completion_tokens = response.usage.completion_tokens

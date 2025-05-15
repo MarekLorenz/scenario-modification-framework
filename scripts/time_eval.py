@@ -1,7 +1,7 @@
 import numpy as np
 
 # Read times from file
-with open('times_2_0_2', 'r') as f:
+with open('times', 'r') as f:
     times = [float(line.strip()) for line in f.readlines()]
 
 # Calculate statistics

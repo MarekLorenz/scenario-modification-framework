@@ -115,7 +115,7 @@ def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: 
         print(f"Error occurred - Retrying: {e}")
         # output_file = scenario_filepath
         # # flow prompting loop with meta knowledge
-        # previous_failed_reasonp = e
+        # previous_failed_reason = e
 
     finally:
         # if interrupt:
@@ -137,7 +137,7 @@ def visualize_dynamic_obstacles(scenario_filepath: str, scenario_name: str):
     visualize_dynamic_obstacles_with_time(L4, show_plot=True)
 
 def save_simulation_result(scenario_name: str, critical_obstacle_id: str, has_collision: bool):
-    result_file = Path("data/simulation_results/all_scenarios_4o.json")
+    result_file = Path("data/simulation_results/all_scenarios_4o_ablation_study.json")
     
     # Create directory if it doesn't exist
     result_file.parent.mkdir(parents=True, exist_ok=True)
