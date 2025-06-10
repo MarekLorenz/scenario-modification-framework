@@ -1,4 +1,4 @@
-# scenario-modification-framework
+# Scenario Modification Framework
 
 ## An LLM-based approach to improve the Safety Criticality of Driving Scenarios
 
