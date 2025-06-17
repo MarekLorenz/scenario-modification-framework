@@ -48,3 +48,10 @@ other hand, scenario generation still struggles with realism, with only few corr
 scenarios produced.
 This work marks an initial step, and further improvements are needed, especially in
 extending the MTL definitions to better capture all aspects of a scenario.
+
+## Experiment Data
+
+The analysis and modification results referenced in the thesis can be found in the folder `data_thesis`, the modified scenarios are in the `data_thesis/analysis_modification` folder and the analysis evaluation can be found in the folder `data_thesis/analysis_evaluation` alongside the ablation study results. 
+
+There are scripts for automatically running a batch of scenarios and analyzing the results of runtime, token count and accuracy in the folder `scripts`.
+
