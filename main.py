@@ -90,44 +90,44 @@ def helper(scenario_filepath: str, scenario_name: str, ego_trajectory_filepath: 
         critical_interval = find_critical_interval(L7_mtl, L4_mtl, L1_mtl)
         # Additional llm-based termination condition when a scenario is already very critical
         step_two_result = parse_critical_interval_output(critical_interval)
-        # if step_two_result.has_collision:
-        #     print("Interrupt signal received. Returning current scenario.")
-        #     interrupt = True
-        #     return scenario_filepath
+        if step_two_result.has_collision:
+            print("Interrupt signal received. Returning current scenario.")
+            interrupt = True
+            return scenario_filepath
         print(f"Step 2 result: {step_two_result}")
         # save simulation result for accuracy analysis
-        save_simulation_result(scenario_name, step_two_result.critical_obstacle_id, step_two_result.has_collision)
+        # save_simulation_result(scenario_name, step_two_result.critical_obstacle_id, step_two_result.has_collision)
 
         # LLM Step 3: Modify the scenario
-        # start_time = step_two_result.critical_interval.start_time
-        # end_time = step_two_result.critical_interval.end_time
-        # dynamic_obstacle_lanelets = get_lanelets_for_obstacle(L4, L1, step_two_result.critical_obstacle_id, start_time, end_time)
-        # ego_lanelets = get_ego_lanelets_in_interval(L7, L1, start_time, end_time)
-        # altered_obstacle_data = modify_scenario(step_two_result, L1,  L4, L7, ego_lanelets, dynamic_obstacle_lanelets, previous_failed_reason)
-        # parsed_obstacle_data = parse_obstacle_data(altered_obstacle_data)
-        # print(f"Parsed obstacle data: {parsed_obstacle_data}")
-        # update_xml_scenario(scenario_filepath, step_two_result.critical_obstacle_id, parsed_obstacle_data, "updated_scenario.xml", L1)
+        start_time = step_two_result.critical_interval.start_time
+        end_time = step_two_result.critical_interval.end_time
+        dynamic_obstacle_lanelets = get_lanelets_for_obstacle(L4, L1, step_two_result.critical_obstacle_id, start_time, end_time)
+        ego_lanelets = get_ego_lanelets_in_interval(L7, L1, start_time, end_time)
+        altered_obstacle_data = modify_scenario(step_two_result, L1,  L4, L7, ego_lanelets, dynamic_obstacle_lanelets, previous_failed_reason)
+        parsed_obstacle_data = parse_obstacle_data(altered_obstacle_data)
+        print(f"Parsed obstacle data: {parsed_obstacle_data}")
+        update_xml_scenario(scenario_filepath, step_two_result.critical_obstacle_id, parsed_obstacle_data, "updated_scenario.xml", L1)
 
-        # scenario_name = "updated_scenario"
-        # output_file = f'updated_scenario.xml'
+        scenario_name = "updated_scenario"
+        output_file = f'updated_scenario.xml'
 
     except Exception as e:
         print(f"Error occurred - Retrying: {e}")
-        # output_file = scenario_filepath
-        # # flow prompting loop with meta knowledge
-        # previous_failed_reason = e
+        output_file = scenario_filepath
+        # flow prompting loop with meta knowledge
+        previous_failed_reason = e
 
     finally:
-        # if interrupt:
-        return scenario_filepath
-        # updated_n = n + 1
-        # return helper(
-        #     scenario_filepath=output_file,
-        #     scenario_name=scenario_name, 
-        #     ego_trajectory_filepath=ego_trajectory_filepath,
-        #     n=updated_n,
-        #     previous_failed_reason=previous_failed_reason,
-        #     num_iterations=num_iterations)
+        if interrupt:
+            return scenario_filepath
+        updated_n = n + 1 
+        return helper(
+            scenario_filepath=output_file,
+            scenario_name=scenario_name, 
+            ego_trajectory_filepath=ego_trajectory_filepath,
+            n=updated_n,
+            previous_failed_reason=previous_failed_reason,
+            num_iterations=num_iterations)
 
 def visualize_dynamic_obstacles(scenario_filepath: str, scenario_name: str):
     convert_single_xml_to_json(scenario_filepath, 'data/json_scenarios')
@@ -137,7 +137,7 @@ def visualize_dynamic_obstacles(scenario_filepath: str, scenario_name: str):
     visualize_dynamic_obstacles_with_time(L4, show_plot=True)
 
 def save_simulation_result(scenario_name: str, critical_obstacle_id: str, has_collision: bool):
-    result_file = Path("data/simulation_results/all_scenarios_4o_ablation_study.json")
+    result_file = Path("data/simulation_results/all_scenarios_4_5_revalidation.json")
     
     # Create directory if it doesn't exist
     result_file.parent.mkdir(parents=True, exist_ok=True)

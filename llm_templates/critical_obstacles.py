@@ -31,9 +31,9 @@ def find_critical_obstacles(L4_mtl, L7_mtl) -> str:
     Do not include any other text in your response, only the list.
     """
 
-    ablation_study = True
+    ablation_study = False
     user_prompt = f"""
-    {f'''Write down the following json after your analysis. Only give me one dictionary containing the list of critical obstacle ids, including five. DO NOT WRITE ANY CODE OR PROGRAM:
+    {f'''Write down the following json after your analysis. Only give me one dictionary containing the list of five (5) critical obstacle ids. DO NOT WRITE ANY CODE OR PROGRAM:
     {{
         "critical_obstacle_ids": [
             "obstacle_id_1",

@@ -37,7 +37,7 @@ Write down the following json after your analysis. Only give me one dictionary, 
 
 Do not include any other text in your response, only the tuple that is the most critical.
 """
-    ablation_study = True
+    ablation_study = False
     user_prompt = f"""
 {f'''Write down the following json after your analysis. Only give me one dictionary, DO NOT WRITE ANY CODE OR PROGRAM:
 {{

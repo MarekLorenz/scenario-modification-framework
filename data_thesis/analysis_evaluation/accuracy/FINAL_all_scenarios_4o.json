@@ -1,0 +1,826 @@
+{
+    "BEL_Antwerp-30_1_T-1": {
+        "critical_obstacle_id": "30640",
+        "has_collision": false
+    },
+    "BEL_Antwerp-3_11_T-1": {
+        "critical_obstacle_id": "30759",
+        "has_collision": false
+    },
+    "BEL_Antwerp-59_1_T-1": {
+        "critical_obstacle_id": "30493",
+        "has_collision": false
+    },
+    "BEL_Brussels-11_18_T-1": {
+        "critical_obstacle_id": "30259",
+        "has_collision": false
+    },
+    "BEL_Brussels-38_2_T-1": {
+        "critical_obstacle_id": "30220",
+        "has_collision": false
+    },
+    "BEL_Brussels-65_11_T-1": {
+        "critical_obstacle_id": "30209",
+        "has_collision": false
+    },
+    "BEL_Antwerp-14_6_T-1": {
+        "critical_obstacle_id": "30636",
+        "has_collision": true
+    },
+    "BEL_Antwerp-18_4_T-1": {
+        "critical_obstacle_id": "30738",
+        "has_collision": true
+    },
+    "BEL_Antwerp-1_9_T-1": {
+        "critical_obstacle_id": "30765",
+        "has_collision": false
+    },
+    "BEL_Antwerp-3_1_T-1": {
+        "critical_obstacle_id": "30762",
+        "has_collision": true
+    },
+    "BEL_Antwerp-40_6_T-1": {
+        "critical_obstacle_id": "30660",
+        "has_collision": false
+    },
+    "BEL_Antwerp-41_1_T-1": {
+        "critical_obstacle_id": "30699",
+        "has_collision": false
+    },
+    "BEL_Antwerp-50_1_T-1": {
+        "critical_obstacle_id": "30638",
+        "has_collision": true
+    },
+    "BEL_Brussels-11_23_T-1": {
+        "critical_obstacle_id": "30262",
+        "has_collision": true
+    },
+    "BEL_Brussels-51_2_T-1": {
+        "critical_obstacle_id": "30196",
+        "has_collision": true
+    },
+    "BEL_Brussels-52_1_T-1": {
+        "critical_obstacle_id": "30235",
+        "has_collision": true
+    },
+    "BEL_Brussels-6_1_T-1": {
+        "critical_obstacle_id": "30095",
+        "has_collision": false
+    },
+    "BEL_Brussels-6_6_T-1": {
+        "critical_obstacle_id": "30095",
+        "has_collision": true
+    },
+    "BEL_Brussels-75_14_T-1": {
+        "critical_obstacle_id": "30210",
+        "has_collision": false
+    },
+    "BEL_Brussels-79_2_T-1": {
+        "critical_obstacle_id": "30183",
+        "has_collision": true
+    },
+    "BEL_Leuven-12_2_T-1": {
+        "critical_obstacle_id": "30299",
+        "has_collision": true
+    },
+    "BEL_Leuven-18_4_T-1": {
+        "critical_obstacle_id": "30239",
+        "has_collision": false
+    },
+    "BEL_Leuven-19_1_T-1": {
+        "critical_obstacle_id": "30171",
+        "has_collision": true
+    },
+    "BEL_Leuven-39_3_T-1": {
+        "critical_obstacle_id": "30194",
+        "has_collision": true
+    },
+    "BEL_Leuven-5_7_T-1": {
+        "critical_obstacle_id": "30295",
+        "has_collision": true
+    },
+    "BEL_Leuven-6_15_T-1": {
+        "critical_obstacle_id": "30261",
+        "has_collision": true
+    },
+    "BEL_Nivelles-18_2_T-1": {
+        "critical_obstacle_id": "33",
+        "has_collision": false
+    },
+    "BEL_Nivelles-3_2_T-1": {
+        "critical_obstacle_id": "335",
+        "has_collision": true
+    },
+    "BEL_Putte-5_7_T-1": {
+        "critical_obstacle_id": "317",
+        "has_collision": true
+    },
+    "BEL_Zaventem-1_2_T-1": {
+        "critical_obstacle_id": "313",
+        "has_collision": false
+    },
+    "BEL_Zwevegem-1_6_T-1": {
+        "critical_obstacle_id": "333",
+        "has_collision": true
+    },
+    "CHN_Beijing-13_13_T-1": {
+        "critical_obstacle_id": "3058",
+        "has_collision": true
+    },
+    "CHN_Beijing-13_20_T-1": {
+        "critical_obstacle_id": "3052",
+        "has_collision": false
+    },
+    "CHN_Beijing-18_4_T-1": {
+        "critical_obstacle_id": "3051",
+        "has_collision": true
+    },
+    "CHN_Beijing-3_5_T-1": {
+        "critical_obstacle_id": "3107",
+        "has_collision": true
+    },
+    "CHN_Beijing-6_9_T-1": {
+        "critical_obstacle_id": "3093",
+        "has_collision": false
+    },
+    "CHN_Qingdao-11_3_T-1": {
+        "critical_obstacle_id": "30702",
+        "has_collision": true
+    },
+    "CHN_Qingdao-12_4_T-1": {
+        "critical_obstacle_id": "30743",
+        "has_collision": true
+    },
+    "CHN_Qingdao-12_9_T-1": {
+        "critical_obstacle_id": "30737",
+        "has_collision": false
+    },
+    "CHN_Qingdao-33_9_T-1": {
+        "critical_obstacle_id": "30686",
+        "has_collision": true
+    },
+    "CHN_Qingdao-38_3_T-1": {
+        "critical_obstacle_id": "30669",
+        "has_collision": false
+    },
+    "CHN_Qingdao-6_4_T-1": {
+        "critical_obstacle_id": "30686",
+        "has_collision": true
+    },
+    "CHN_Qingdao-7_16_T-1": {
+        "critical_obstacle_id": "30650",
+        "has_collision": true
+    },
+    "CHN_Qingdao-8_1_T-1": {
+        "critical_obstacle_id": "30611",
+        "has_collision": true
+    },
+    "DEU_Arnstadt-9_1_T-4": {
+        "critical_obstacle_id": "20051",
+        "has_collision": true
+    },
+    "DEU_Aschaffenburg-15_26_T-1": {
+        "critical_obstacle_id": "30441",
+        "has_collision": true
+    },
+    "DEU_Aschaffenburg-7_9_T-1": {
+        "critical_obstacle_id": "30354",
+        "has_collision": true
+    },
+    "DEU_Bonn-19_2_T-1": {
+        "critical_obstacle_id": "30202",
+        "has_collision": true
+    },
+    "DEU_Bremen-33_33_T-1": {
+        "critical_obstacle_id": "30274",
+        "has_collision": true
+    },
+    "DEU_Bremen-7_12_T-1": {
+        "critical_obstacle_id": "30299",
+        "has_collision": true
+    },
+    "DEU_Hanover-45_17_T-1": {
+        "critical_obstacle_id": "30700",
+        "has_collision": true
+    },
+    "DEU_Leipzig-13_19_T-1": {
+        "critical_obstacle_id": "3254",
+        "has_collision": true
+    },
+    "DEU_Leipzig-13_7_T-1": {
+        "critical_obstacle_id": "3254",
+        "has_collision": true
+    },
+    "DEU_Leipzig-37_8_T-1": {
+        "critical_obstacle_id": "3074",
+        "has_collision": true
+    },
+    "DEU_Nuremberg-24_13_T-1": {
+        "critical_obstacle_id": "30716",
+        "has_collision": true
+    },
+    "DEU_Nuremberg-27_1_T-1": {
+        "critical_obstacle_id": "30628",
+        "has_collision": true
+    },
+    "DEU_Nuremberg-30_6_T-1": {
+        "critical_obstacle_id": "30603",
+        "has_collision": false
+    },
+    "DEU_Nuremberg-6_34_T-1": {
+        "critical_obstacle_id": "30796",
+        "has_collision": true
+    },
+    "ESP_Barcelona-10_44_T-1": {
+        "critical_obstacle_id": "30749",
+        "has_collision": true
+    },
+    "ESP_Barcelona-12_43_T-1": {
+        "critical_obstacle_id": "30716",
+        "has_collision": true
+    },
+    "ESP_Barcelona-38_52_T-1": {
+        "critical_obstacle_id": "30739",
+        "has_collision": true
+    },
+    "ESP_Barcelona-39_11_T-1": {
+        "critical_obstacle_id": "30813",
+        "has_collision": false
+    },
+    "ESP_Barcelona-3_13_T-1": {
+        "critical_obstacle_id": "30764",
+        "has_collision": true
+    },
+    "ESP_Barcelona-44_19_T-1": {
+        "critical_obstacle_id": "30743",
+        "has_collision": true
+    },
+    "ESP_Barcelona-44_27_T-1": {
+        "critical_obstacle_id": "30760",
+        "has_collision": true
+    },
+    "ESP_Barcelona-49_21_T-1": {
+        "critical_obstacle_id": "30784",
+        "has_collision": true
+    },
+    "ESP_Bilbao-13_20_T-1": {
+        "critical_obstacle_id": "30801",
+        "has_collision": true
+    },
+    "ESP_Bilbao-23_16_T-1": {
+        "critical_obstacle_id": "30921",
+        "has_collision": true
+    },
+    "ESP_Vigo-63_4_T-1": {
+        "critical_obstacle_id": "3044",
+        "has_collision": false
+    },
+    "ESP_Vigo-70_3_T-1": {
+        "critical_obstacle_id": "3395",
+        "has_collision": true
+    },
+    "ESP_Vigo-99_28_T-1": {
+        "critical_obstacle_id": "3517",
+        "has_collision": false
+    },
+    "ESP_Vigo-99_34_T-1": {
+        "critical_obstacle_id": "3523",
+        "has_collision": true
+    },
+    "FRA_Dijon-13_1_T-1": {
+        "critical_obstacle_id": "30374",
+        "has_collision": true
+    },
+    "FRA_Dijon-24_4_T-1": {
+        "critical_obstacle_id": "30504",
+        "has_collision": true
+    },
+    "ITA_Empoli-2_5_T-1": {
+        "critical_obstacle_id": "358",
+        "has_collision": true
+    },
+    "USA_Austin-77_10_T-1": {
+        "critical_obstacle_id": "3349",
+        "has_collision": true
+    },
+    "USA_Phoenix-17_19_T-1": {
+        "critical_obstacle_id": "3667",
+        "has_collision": true
+    },
+    "USA_Washington-32_46_T-1": {
+        "critical_obstacle_id": "30570",
+        "has_collision": true
+    },
+    "USA_Washington-34_15_T-1": {
+        "critical_obstacle_id": "30579",
+        "has_collision": true
+    },
+    "BEL_Antwerp-1_14_T-1": {
+        "critical_obstacle_id": "30756",
+        "has_collision": false
+    },
+    "BEL_Antwerp-40_3_T-1": {
+        "critical_obstacle_id": "30670",
+        "has_collision": true
+    },
+    "BEL_Antwerp-44_1_T-1": {
+        "critical_obstacle_id": "30615",
+        "has_collision": true
+    },
+    "BEL_Antwerp-48_1_T-1": {
+        "critical_obstacle_id": "30524",
+        "has_collision": false
+    },
+    "BEL_Antwerp-5_13_T-1": {
+        "critical_obstacle_id": "30694",
+        "has_collision": false
+    },
+    "BEL_Antwerp-8_7_T-1": {
+        "critical_obstacle_id": "30597",
+        "has_collision": true
+    },
+    "BEL_Brussels-29_1_T-1": {
+        "critical_obstacle_id": "30082",
+        "has_collision": false
+    },
+    "BEL_Brussels-38_5_T-1": {
+        "critical_obstacle_id": "30221",
+        "has_collision": false
+    },
+    "BEL_Brussels-3_1_T-1": {
+        "critical_obstacle_id": "30245",
+        "has_collision": false
+    },
+    "BEL_Brussels-40_4_T-1": {
+        "critical_obstacle_id": "30197",
+        "has_collision": true
+    },
+    "BEL_Brussels-41_4_T-1": {
+        "critical_obstacle_id": "30170",
+        "has_collision": true
+    },
+    "BEL_Brussels-41_5_T-1": {
+        "critical_obstacle_id": "30168",
+        "has_collision": true
+    },
+    "BEL_Brussels-50_20_T-1": {
+        "critical_obstacle_id": "30211",
+        "has_collision": true
+    },
+    "BEL_Brussels-62_3_T-1": {
+        "critical_obstacle_id": "30209",
+        "has_collision": false
+    },
+    "BEL_Brussels-68_1_T-1": {
+        "critical_obstacle_id": "30101",
+        "has_collision": false
+    },
+    "BEL_Brussels-75_2_T-1": {
+        "critical_obstacle_id": "30209",
+        "has_collision": true
+    },
+    "BEL_Brussels-78_3_T-1": {
+        "critical_obstacle_id": "30218",
+        "has_collision": false
+    },
+    "BEL_Brussels-80_13_T-1": {
+        "critical_obstacle_id": "30217",
+        "has_collision": false
+    },
+    "BEL_Brussels-80_24_T-1": {
+        "critical_obstacle_id": "30223",
+        "has_collision": true
+    },
+    "BEL_Brussels-82_1_T-1": {
+        "critical_obstacle_id": "30232",
+        "has_collision": false
+    },
+    "BEL_Brussels-82_4_T-1": {
+        "critical_obstacle_id": "30233",
+        "has_collision": true
+    },
+    "BEL_Brussels-82_5_T-1": {
+        "critical_obstacle_id": "30231",
+        "has_collision": true
+    },
+    "BEL_Leuven-24_13_T-1": {
+        "critical_obstacle_id": "30223",
+        "has_collision": false
+    },
+    "BEL_Leuven-24_19_T-1": {
+        "critical_obstacle_id": "30221",
+        "has_collision": false
+    },
+    "BEL_Leuven-24_2_T-1": {
+        "critical_obstacle_id": "30220",
+        "has_collision": false
+    },
+    "BEL_Leuven-24_42_T-1": {
+        "critical_obstacle_id": "30221",
+        "has_collision": false
+    },
+    "BEL_Leuven-24_43_T-1": {
+        "critical_obstacle_id": "30225",
+        "has_collision": false
+    },
+    "BEL_Leuven-2_5_T-1": {
+        "critical_obstacle_id": "30296",
+        "has_collision": false
+    },
+    "BEL_Leuven-34_21_T-1": {
+        "critical_obstacle_id": "30219",
+        "has_collision": true
+    },
+    "BEL_Leuven-34_2_T-1": {
+        "critical_obstacle_id": "30211",
+        "has_collision": false
+    },
+    "BEL_Leuven-39_7_T-1": {
+        "critical_obstacle_id": "30187",
+        "has_collision": true
+    },
+    "BEL_Leuven-43_1_T-1": {
+        "critical_obstacle_id": "30293",
+        "has_collision": false
+    },
+    "BEL_Leuven-46_10_T-1": {
+        "critical_obstacle_id": "30312",
+        "has_collision": false
+    },
+    "BEL_Leuven-48_2_T-1": {
+        "critical_obstacle_id": "30118",
+        "has_collision": false
+    },
+    "BEL_Leuven-48_3_T-1": {
+        "critical_obstacle_id": "30118",
+        "has_collision": false
+    },
+    "BEL_Leuven-54_8_T-1": {
+        "critical_obstacle_id": "30279",
+        "has_collision": true
+    },
+    "BEL_Leuven-5_9_T-1": {
+        "critical_obstacle_id": "30297",
+        "has_collision": false
+    },
+    "BEL_Leuven-6_2_T-1": {
+        "critical_obstacle_id": "30261",
+        "has_collision": true
+    },
+    "BEL_Nivelles-9_1_T-1": {
+        "critical_obstacle_id": "336",
+        "has_collision": false
+    },
+    "BEL_Putte-10_3_T-1": {
+        "critical_obstacle_id": "30",
+        "has_collision": true
+    },
+    "BEL_Putte-7_3_T-1": {
+        "critical_obstacle_id": "32",
+        "has_collision": false
+    },
+    "BEL_Zwevegem-2_2_T-1": {
+        "critical_obstacle_id": "33",
+        "has_collision": true
+    },
+    "BEL_Zwevegem-6_3_T-1": {
+        "critical_obstacle_id": "391",
+        "has_collision": false
+    },
+    "BEL_Zwevegem-8_4_T-1": {
+        "critical_obstacle_id": "337",
+        "has_collision": false
+    },
+    "CHN_Beijing-13_21_T-1": {
+        "critical_obstacle_id": "3074",
+        "has_collision": false
+    },
+    "CHN_Beijing-13_8_T-1": {
+        "critical_obstacle_id": "3070",
+        "has_collision": false
+    },
+    "CHN_Qingdao-12_1_T-1": {
+        "critical_obstacle_id": "30746",
+        "has_collision": false
+    },
+    "CHN_Qingdao-13_7_T-1": {
+        "critical_obstacle_id": "30621",
+        "has_collision": false
+    },
+    "CHN_Qingdao-14_12_T-1": {
+        "critical_obstacle_id": "30668",
+        "has_collision": false
+    },
+    "CHN_Qingdao-14_28_T-1": {
+        "critical_obstacle_id": "30650",
+        "has_collision": false
+    },
+    "CHN_Qingdao-14_29_T-1": {
+        "critical_obstacle_id": "30656",
+        "has_collision": true
+    },
+    "CHN_Qingdao-15_2_T-1": {
+        "critical_obstacle_id": "30627",
+        "has_collision": true
+    },
+    "CHN_Qingdao-18_2_T-1": {
+        "critical_obstacle_id": "30655",
+        "has_collision": true
+    },
+    "CHN_Qingdao-33_4_T-1": {
+        "critical_obstacle_id": "30693",
+        "has_collision": false
+    },
+    "CHN_Qingdao-6_6_T-1": {
+        "critical_obstacle_id": "30677",
+        "has_collision": true
+    },
+    "CHN_Qingdao-7_20_T-1": {
+        "critical_obstacle_id": "30671",
+        "has_collision": false
+    },
+    "CHN_Qingdao-7_4_T-1": {
+        "critical_obstacle_id": "30659",
+        "has_collision": false
+    },
+    "CHN_Qingdao-8_10_T-1": {
+        "critical_obstacle_id": "30612",
+        "has_collision": false
+    },
+    "DEU_A99-1_2_T-1": {
+        "critical_obstacle_id": "202",
+        "has_collision": false
+    },
+    "DEU_Arnstadt-11_1_T-2": {
+        "critical_obstacle_id": "20036",
+        "has_collision": false
+    },
+    "DEU_Arnstadt-20_1_T-1": {
+        "critical_obstacle_id": "20005",
+        "has_collision": false
+    },
+    "DEU_Arnstadt-3_1_T-3": {
+        "critical_obstacle_id": "20037",
+        "has_collision": false
+    },
+    "DEU_Arnstadt-46_1_T-1": {
+        "critical_obstacle_id": "20054",
+        "has_collision": false
+    },
+    "DEU_Arnstadt-83_1_T-4": {
+        "critical_obstacle_id": "20041",
+        "has_collision": false
+    },
+    "DEU_Arnstadt-96_1_T-1": {
+        "critical_obstacle_id": "20007",
+        "has_collision": false
+    },
+    "DEU_Aschaffenburg-16_5_T-1": {
+        "critical_obstacle_id": "30377",
+        "has_collision": true
+    },
+    "DEU_Aschaffenburg-16_6_T-1": {
+        "critical_obstacle_id": "30372",
+        "has_collision": true
+    },
+    "DEU_Aschaffenburg-21_21_T-1": {
+        "critical_obstacle_id": "30285",
+        "has_collision": false
+    },
+    "DEU_Aschaffenburg-64_5_T-1": {
+        "critical_obstacle_id": "30188",
+        "has_collision": true
+    },
+    "DEU_Backnang-2_1_T-1": {
+        "critical_obstacle_id": "33",
+        "has_collision": true
+    },
+    "DEU_Bonn-35_11_T-1": {
+        "critical_obstacle_id": "30200",
+        "has_collision": true
+    },
+    "DEU_Bonn-38_18_T-1": {
+        "critical_obstacle_id": "30234",
+        "has_collision": true
+    },
+    "DEU_Bonn-38_4_T-1": {
+        "critical_obstacle_id": "30233",
+        "has_collision": true
+    },
+    "DEU_Bremen-1_10_T-1": {
+        "critical_obstacle_id": "30295",
+        "has_collision": true
+    },
+    "DEU_Bremen-7_23_T-1": {
+        "critical_obstacle_id": "30306",
+        "has_collision": true
+    },
+    "DEU_Flensburg-62_1_T-1": {
+        "critical_obstacle_id": "38",
+        "has_collision": false
+    },
+    "DEU_Guetersloh-32_1_T-1": {
+        "critical_obstacle_id": "33",
+        "has_collision": true
+    },
+    "DEU_Hanover-38_33_T-1": {
+        "critical_obstacle_id": "30688",
+        "has_collision": true
+    },
+    "DEU_Hanover-44_28_T-1": {
+        "critical_obstacle_id": "30730",
+        "has_collision": true
+    },
+    "DEU_Hennigsdorf-5_3_T-1": {
+        "critical_obstacle_id": "342",
+        "has_collision": true
+    },
+    "DEU_Kiel-52_2_T-1": {
+        "critical_obstacle_id": "30666",
+        "has_collision": true
+    },
+    "DEU_Kleinmachnow-19_1_T-6": {
+        "critical_obstacle_id": "6",
+        "has_collision": false
+    },
+    "DEU_Leipzig-63_24_T-1": {
+        "critical_obstacle_id": "3261",
+        "has_collision": true
+    },
+    "DEU_Lengede-44_1_T-6": {
+        "critical_obstacle_id": "8",
+        "has_collision": false
+    },
+    "DEU_Memmingen-138_1_T-4": {
+        "critical_obstacle_id": "20029",
+        "has_collision": false
+    },
+    "DEU_Memmingen-1_1_T-5": {
+        "critical_obstacle_id": "20028",
+        "has_collision": false
+    },
+    "DEU_Muehlhausen-10_5_T-1": {
+        "critical_obstacle_id": "315",
+        "has_collision": true
+    },
+    "DEU_Muehlhausen-5_1_T-1": {
+        "critical_obstacle_id": "330",
+        "has_collision": true
+    },
+    "DEU_Nuremberg-29_9_T-1": {
+        "critical_obstacle_id": "30788",
+        "has_collision": true
+    },
+    "DEU_Nuremberg-6_21_T-1": {
+        "critical_obstacle_id": "30802",
+        "has_collision": false
+    },
+    "DEU_Salzwedel-74_1_T-4": {
+        "critical_obstacle_id": "20041",
+        "has_collision": false
+    },
+    "DEU_Salzwedel-80_1_T-2": {
+        "critical_obstacle_id": "20010",
+        "has_collision": false
+    },
+    "DEU_Schopfloch-6_1_T-2": {
+        "critical_obstacle_id": "20057",
+        "has_collision": true
+    },
+    "DEU_Schweitenkirchen-4_1_T-12": {
+        "critical_obstacle_id": "9",
+        "has_collision": false
+    },
+    "DEU_Schweitenkirchen-5_1_T-36": {
+        "critical_obstacle_id": "205",
+        "has_collision": false
+    },
+    "DEU_Schwetzingen-10_1_T-5": {
+        "critical_obstacle_id": "20130",
+        "has_collision": true
+    },
+    "DEU_Schwetzingen-112_1_T-1": {
+        "critical_obstacle_id": "20046",
+        "has_collision": true
+    },
+    "DEU_Schwetzingen-174_1_T-4": {
+        "critical_obstacle_id": "20090",
+        "has_collision": false
+    },
+    "DEU_Schwetzingen-180_1_T-2": {
+        "critical_obstacle_id": "20094",
+        "has_collision": true
+    },
+    "DEU_Schwetzingen-74_1_T-4": {
+        "critical_obstacle_id": "20034",
+        "has_collision": false
+    },
+    "DEU_Weimar-57_1_T-1": {
+        "critical_obstacle_id": "17",
+        "has_collision": false
+    },
+    "DEU_Weimar-68_1_T-3": {
+        "critical_obstacle_id": "60",
+        "has_collision": true
+    },
+    "DEU_Wolfsburg-39_1_T-8": {
+        "critical_obstacle_id": "20073",
+        "has_collision": false
+    },
+    "ESP_Barcelona-21_6_T-1": {
+        "critical_obstacle_id": "30681",
+        "has_collision": false
+    },
+    "ESP_Barcelona-39_27_T-1": {
+        "critical_obstacle_id": "30810",
+        "has_collision": true
+    },
+    "ESP_Barcelona-3_6_T-1": {
+        "critical_obstacle_id": "30764",
+        "has_collision": true
+    },
+    "ESP_Barcelona-6_18_T-1": {
+        "critical_obstacle_id": "30746",
+        "has_collision": true
+    },
+    "ESP_Bilbao-6_9_T-1": {
+        "critical_obstacle_id": "30693",
+        "has_collision": true
+    },
+    "ESP_Ceuta-5_2_T-1": {
+        "critical_obstacle_id": "325",
+        "has_collision": true
+    },
+    "ESP_Vigo-70_2_T-1": {
+        "critical_obstacle_id": "3393",
+        "has_collision": true
+    },
+    "ESP_Vigo-99_21_T-1": {
+        "critical_obstacle_id": "3515",
+        "has_collision": false
+    },
+    "FRA_Dijon-28_4_T-1": {
+        "critical_obstacle_id": "30532",
+        "has_collision": true
+    },
+    "GRC_ArchaioLimani-46_1_T-2": {
+        "critical_obstacle_id": "10",
+        "has_collision": false
+    },
+    "GRC_NeaSmyrni-117_1_T-6": {
+        "critical_obstacle_id": "20028",
+        "has_collision": true
+    },
+    "GRC_NeaSmyrni-154_1_T-2": {
+        "critical_obstacle_id": "20050",
+        "has_collision": false
+    },
+    "GRC_NeaSmyrni-31_1_T-12": {
+        "critical_obstacle_id": "20076",
+        "has_collision": false
+    },
+    "GRC_NeaSmyrni-73_1_T-10": {
+        "critical_obstacle_id": "20100",
+        "has_collision": true
+    },
+    "GRC_NeaSmyrni-87_1_T-1": {
+        "critical_obstacle_id": "20039",
+        "has_collision": true
+    },
+    "GRC_NeaSmyrni-98_1_T-1": {
+        "critical_obstacle_id": "20043",
+        "has_collision": true
+    },
+    "ITA_Empoli-7_2_T-1": {
+        "critical_obstacle_id": "317",
+        "has_collision": true
+    },
+    "ITA_Siderno-5_3_T-1": {
+        "critical_obstacle_id": "344",
+        "has_collision": false
+    },
+    "USA_Austin-46_4_T-1": {
+        "critical_obstacle_id": "3277",
+        "has_collision": true
+    },
+    "USA_Austin-64_7_T-1": {
+        "critical_obstacle_id": "3338",
+        "has_collision": false
+    },
+    "USA_Austin-8_1_T-1": {
+        "critical_obstacle_id": "3301",
+        "has_collision": true
+    },
+    "USA_Phoenix-17_14_T-1": {
+        "critical_obstacle_id": "3658",
+        "has_collision": false
+    },
+    "USA_Washington-12_15_T-1": {
+        "critical_obstacle_id": "30610",
+        "has_collision": true
+    },
+    "USA_Washington-12_38_T-1": {
+        "critical_obstacle_id": "30629",
+        "has_collision": true
+    }
+}

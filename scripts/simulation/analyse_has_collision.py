@@ -25,7 +25,7 @@ def compare_results():
             csv_dict[scenario_name] = obstacle_id
     
     # Load JSON data
-    json_path = Path('/Users/mareklorenz/Development/scenario-modification-framework/data/simulation_results/FINAL_all_scenarios_4o_ablation_study.json')
+    json_path = Path('/Users/mareklorenz/Development/scenario-modification-framework/data/simulation_results/all_scenarios_4_5_revalidation.json')
     with open(json_path, 'r') as f:
         json_dict = json.load(f)
     

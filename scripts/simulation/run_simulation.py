@@ -34,7 +34,7 @@ def run_simulations():
             if not updated_src.exists():
                 print(f"Error: {updated_src} does not exist after simulation for {scenario_name}")
             else:
-                dest_dir = base_dir / 'updated_files_4o'
+                dest_dir = base_dir / 'updated_files_2_0_3_iterations'
                 dest_dir.mkdir(parents=True, exist_ok=True)
                 updated_dest = dest_dir / f"updated_{scenario_name}.xml"
                 # Overwrite the existing file if it exists

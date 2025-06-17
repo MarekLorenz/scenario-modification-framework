@@ -17,7 +17,7 @@ def process_scenarios():
     logs_dir.mkdir(parents=True, exist_ok=True)
     
     # Process collision scenarios
-    collision_dir = base_dir / 'Dataset/all_scenarios_combined'
+    collision_dir = base_dir / 'Dataset/success_scenarios'
     if not collision_dir.exists():
         print(f"Warning: All scenarios directory not found at {collision_dir}")
     else:
