@@ -9,7 +9,7 @@ in Autonomous Driving (2025).**
 
 Since safety-critical scenarios are rare, recorded data from the CommonRoad simulation platform can be used to synthesize more safety-critical scenario data, to enable more thorough testing of Motion Planners. For this purpose, we can conduct a safety-critical analysis, which serves as the basis for anb iterative scenario modification.
 
-# Prerequisites
+## Prerequisites
 
 Make sure to have all needed packages listed in the `requirements.txt` installed in your environment.
 
