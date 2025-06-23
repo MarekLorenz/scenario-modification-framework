@@ -6,3 +6,5 @@ xmltodict
 requests
 python-dotenv
 google-generativeai
+Pillow
+openai
