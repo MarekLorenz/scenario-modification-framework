@@ -9,6 +9,10 @@ in Autonomous Driving (2025).**
 
 Since safety-critical scenarios are rare, recorded data from the CommonRoad simulation platform can be used to synthesize more safety-critical scenario data, to enable more thorough testing of Motion Planners. For this purpose, we can conduct a safety-critical analysis, which serves as the basis for anb iterative scenario modification.
 
+# Prerequisites
+
+Make sure to have all needed packages listed in the `requirements.txt` installed in your environment.
+
 ## How to use it?
 ### Step 1:
 Download a CommonRoad Scenario XML at https://commonroad.in.tum.de/scenarios/.
@@ -28,10 +32,12 @@ The implemenation is built on top of [Yuan Gao's Risk-Aware Scenario Analysis](h
 
 The framework is divided in Scenario Analysis and Scenario Modification, as you can see below.
 
-![image](https://github.com/user-attachments/assets/c489baf0-ff26-4d72-8c0d-13bc4bad8c8b)
+![image](https://github.com/user-attachments/assets/ae92da7b-2b13-4563-88e9-08666ece567e)
+
 
 The ouput modifies the scenario to make it more safety-critical, as in the following example producing a collision using the same Motion Planner.
-![image](https://github.com/user-attachments/assets/aed94fd7-a444-43bc-ab02-14e72dbbee81)
+![image](https://github.com/user-attachments/assets/24836eab-c6ac-4806-87d6-24303ba092e5)
+
 
 ## Thesis Abstract
 
