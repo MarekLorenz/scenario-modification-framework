@@ -13,7 +13,7 @@ Since safety-critical scenarios are rare, recorded data from the CommonRoad simu
 
 Make sure to have all needed packages listed in the `requirements.txt` installed in your environment.
 
-## How to use it?
+## How to use it for one scenario?
 ### Step 1:
 Download a CommonRoad Scenario XML at https://commonroad.in.tum.de/scenarios/.
 Then use the [Frenetix Motion Planner](https://github.com/TUM-AVS/Frenetix-Motion-Planner) to generate a planned ego trajectory.
@@ -25,6 +25,19 @@ Now the modification can be run with the following configuration (s ... Scenario
 
 For example it can look like this:
 `python3 main.py -s BEL_Antwerp-1_9_T-1 -n 3 -v False`
+
+## How to use the framework for multiple scenarios?
+### Step 1:
+Create a folder with all CommonRoad XML scenarios that you want to modify. Then input them in the Frenetix Motion Planner and extract the newly generated logs folder from Frenetix Motion Planner. 
+
+### Step 2:
+Then store the XML in scenarios in `data/scenarios` and the logs folder as `data/logs`.
+
+### Step 3:
+Prepare the modification with `python scripts/prepare_simulation.py`.
+
+### Step 4:
+Run the modification with `python scripts/simulation/run_evaluation.py`
 
 ## Implementation
 
