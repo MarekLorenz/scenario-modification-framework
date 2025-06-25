@@ -9,7 +9,11 @@ in Autonomous Driving (2025).**
 
 Since safety-critical scenarios are rare, recorded data from the CommonRoad simulation platform can be used to synthesize more safety-critical scenario data, to enable more thorough testing of Motion Planners. For this purpose, we can conduct a safety-critical analysis, which serves as the basis for anb iterative scenario modification.
 
-## How to use it?
+## Prerequisites
+
+Make sure to have all needed packages listed in the `requirements.txt` installed in your environment.
+
+## How to use it for one scenario?
 ### Step 1:
 Download a CommonRoad Scenario XML at https://commonroad.in.tum.de/scenarios/.
 Then use the [Frenetix Motion Planner](https://github.com/TUM-AVS/Frenetix-Motion-Planner) to generate a planned ego trajectory.
@@ -22,16 +26,31 @@ Now the modification can be run with the following configuration (s ... Scenario
 For example it can look like this:
 `python3 main.py -s BEL_Antwerp-1_9_T-1 -n 3 -v False`
 
+## How to use the framework for multiple scenarios?
+### Step 1:
+Create a folder with all CommonRoad XML scenarios that you want to modify. Then input them in the Frenetix Motion Planner and extract the newly generated logs folder from Frenetix Motion Planner. 
+
+### Step 2:
+Then store the XML in scenarios in `data/scenarios` and the logs folder as `data/logs`.
+
+### Step 3:
+Prepare the modification with `python scripts/prepare_simulation.py`.
+
+### Step 4:
+Run the modification with `python scripts/simulation/run_evaluation.py`. There in the main file output directory for the modified scenarios and number of iterations can be specified in the main method.
+
 ## Implementation
 
 The implemenation is built on top of [Yuan Gao's Risk-Aware Scenario Analysis](https://github.com/yuangao-tum/Riskaware-Scenario-analyse), especially reusing calculations for safety-critical metrics.
 
 The framework is divided in Scenario Analysis and Scenario Modification, as you can see below.
 
-![image](https://github.com/user-attachments/assets/c489baf0-ff26-4d72-8c0d-13bc4bad8c8b)
+![image](https://github.com/user-attachments/assets/ae92da7b-2b13-4563-88e9-08666ece567e)
+
 
 The ouput modifies the scenario to make it more safety-critical, as in the following example producing a collision using the same Motion Planner.
-![image](https://github.com/user-attachments/assets/aed94fd7-a444-43bc-ab02-14e72dbbee81)
+![image](https://github.com/user-attachments/assets/24836eab-c6ac-4806-87d6-24303ba092e5)
+
 
 ## Thesis Abstract
 
