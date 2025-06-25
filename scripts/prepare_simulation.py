@@ -7,8 +7,9 @@ def process_scenarios():
     - Copies XML files from Dataset/collision_scenarios to data/scenarios
     - Copies logs.csv files to data/logs/scenario_name
     """
-    # Base directory
-    base_dir = Path('/Users/mareklorenz/Development/scenario-modification-framework')
+    # Get the script directory and navigate to project root
+    script_dir = Path(__file__).parent
+    base_dir = script_dir.parent  # Go up one level to reach project root
     
     # Create output directories if they don't exist
     scenarios_dir = base_dir / 'data/scenarios'
