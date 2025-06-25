@@ -37,7 +37,7 @@ Then store the XML in scenarios in `data/scenarios` and the logs folder as `data
 Prepare the modification with `python scripts/prepare_simulation.py`.
 
 ### Step 4:
-Run the modification with `python scripts/simulation/run_evaluation.py`
+Run the modification with `python scripts/simulation/run_evaluation.py`. There in the main file output directory for the modified scenarios and number of iterations can be specified in the main method.
 
 ## Implementation
 
