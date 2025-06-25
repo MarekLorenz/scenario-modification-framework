@@ -13,7 +13,7 @@ def run_simulations(output_dir, n_iterations=5):
     scenarios_dir = base_dir / 'data/scenarios'
     
     # Get all XML files in scenarios directory
-    scenario_files = sorted(list(scenarios_dir.glob('*.xml')))[8:]
+    scenario_files = sorted(list(scenarios_dir.glob('*.xml')))
     total_scenarios = len(scenario_files)
 
     print(f"Found {total_scenarios} scenarios to process")
