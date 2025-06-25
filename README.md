@@ -11,7 +11,7 @@ Since safety-critical scenarios are rare, recorded data from the CommonRoad simu
 
 ## Prerequisites
 
-Make sure to have all needed packages listed in the `requirements.txt` installed in your environment.
+Make sure to have all needed packages listed in the `requirements.txt` installed in your environment. You can run `pip install -r requirements.txt`
 
 Fill in the `.env` with the environment variables from the `.env.sample`
 
