@@ -2,11 +2,11 @@ from PIL import Image, ImageSequence, ImageDraw, ImageFont
 import os
 
 # Create output directory if it doesn't exist
-output_dir = "merged_images"
+output_dir = "merged_images_ARG_Carcarana-12_1_T-1"
 os.makedirs(output_dir, exist_ok=True)
 
 # Load GIF
-gif = Image.open("CHN_Qingdao-15_2_T-1.gif")
+gif = Image.open("ARG_Carcarana-12_1_T-1.gif")
 
 # Extract all frames
 all_frames = [frame.copy().convert("RGBA") for frame in ImageSequence.Iterator(gif)]

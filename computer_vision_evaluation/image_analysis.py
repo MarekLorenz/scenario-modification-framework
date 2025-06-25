@@ -15,14 +15,14 @@ def encode_image(image_path):
 def analyze_image(client, image_path):
     """Analyze a single image and return parsed JSON response"""
     base64_image = encode_image(image_path)
-    
+    id = 350
     response = client.chat.completions.create(
         model="o4-mini",
         messages=[
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "The presented picture is a sequence of 3 timestamps in a top-down visualization of a driving scenario in order from left to right. Only focus on the positions of the vehicle with the id 30627. Evaluate whether this sequence of positions is plausible and physically possible. Disregard all other vehicles and any additional markers, trajectories, etc. Return a JSON object containing the following fields: 'motion_description: string', 'plausible: boolean', 'reasoning: string'."},
+                    {"type": "text", "text":f"The presented picture is a sequence of 3 timestamps in a top-down visualization of a driving scenario in order from left to right. Only focus on the positions of the vehicle with the id {id} and whether it changes unnaturally, especially if it collides with hitboxes of other vehicles. Evaluate whether this sequence of positions is plausible and physically possible. Disregard all other vehicles and any additional markers, trajectories, etc. Return a JSON object containing the following fields: 'motion_description: string', 'plausible: boolean', 'reasoning: string'."},
                     {
                         "type": "image_url",
                         "image_url": {
@@ -62,9 +62,9 @@ def parse_llm_response(response_text):
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 # Get all images from merged_images folder
-merged_images_dir = "merged_images"
+merged_images_dir = "merged_images_ARG_Carcarana-12_1_T-1"
 image_pattern = os.path.join(merged_images_dir, "*.png")
-image_paths = sorted(glob.glob(image_pattern))[:3]
+image_paths = sorted(glob.glob(image_pattern))
 
 if not image_paths:
     print(f"No images found in {merged_images_dir} folder")
