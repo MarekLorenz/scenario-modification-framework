@@ -13,13 +13,12 @@ Since safety-critical scenarios are rare, recorded data from the CommonRoad simu
 
 Make sure to have all needed packages listed in the `requirements.txt` installed in your environment.
 
+Fill in the `.env` with the environment variables from the `.env.sample`
+
 ## How to use it for one scenario?
 ### Step 1:
 Download a CommonRoad Scenario XML at https://commonroad.in.tum.de/scenarios/.
 Then use the [Frenetix Motion Planner](https://github.com/TUM-AVS/Frenetix-Motion-Planner) to generate a planned ego trajectory.
-
-### Step 2:
-Fill in the `.env` with the environment variables from the `.env.sample`
 
 ### Step 2:
 To analyse and modify a scenario, the file that should be used is `main.py`. The scenario XML from CommonRoad should be stores as follows: `data/scenarios/{scenario_name}.xml` and the corresponding pre-computed ego-trajectory should be stored under `data/ego_trajectories/ego_trajectory_{scenario_name}.csv`.
