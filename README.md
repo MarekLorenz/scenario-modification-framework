@@ -19,6 +19,9 @@ Download a CommonRoad Scenario XML at https://commonroad.in.tum.de/scenarios/.
 Then use the [Frenetix Motion Planner](https://github.com/TUM-AVS/Frenetix-Motion-Planner) to generate a planned ego trajectory.
 
 ### Step 2:
+Fill in the `.env` with the environment variables from the `.env.sample`
+
+### Step 2:
 To analyse and modify a scenario, the file that should be used is `main.py`. The scenario XML from CommonRoad should be stores as follows: `data/scenarios/{scenario_name}.xml` and the corresponding pre-computed ego-trajectory should be stored under `data/ego_trajectories/ego_trajectory_{scenario_name}.csv`.
 
 Now the modification can be run with the following configuration (s ... Scenario name without XML, n ... maximum number of iterations, v ... Visualization true/false?)
@@ -34,9 +37,6 @@ Create a folder with all CommonRoad XML scenarios that you want to modify. Then 
 Then store the XML in scenarios in `data/scenarios` and the logs folder as `data/logs`.
 
 ### Step 3:
-Prepare the modification with `python scripts/prepare_simulation.py`.
-
-### Step 4:
 Run the modification with `python scripts/simulation/run_evaluation.py`. There in the main file output directory for the modified scenarios and number of iterations can be specified in the main method.
 
 ## Implementation
