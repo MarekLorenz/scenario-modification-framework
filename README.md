@@ -33,7 +33,7 @@ For example it can look like this:
 Create a folder with all CommonRoad XML scenarios that you want to modify. Then input them in the Frenetix Motion Planner and extract the newly generated logs folder from Frenetix Motion Planner. 
 
 ### Step 2:
-Then store the XML in scenarios in `data/scenarios` and the logs folder as `data/logs`.
+Then store the XML scenarios in `data/scenarios` and the logs folder as `data/logs`.
 
 ### Step 3:
 Run the modification with `python scripts/simulation/run_evaluation.py`. In this file the output directory for the modified scenarios and number of iterations can be specified in the main method.
